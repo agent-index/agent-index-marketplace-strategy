@@ -1,0 +1,38 @@
+{
+  "name": "strategy",
+  "display_name": "Strategy",
+  "version": "1.0.0",
+  "description": "Build, evaluate, and evolve named strategies. Define canonical strategy references, configure information sources, run briefings that surface opportunities, and maintain a prioritized opportunity registry — privately or shared with collaborators.",
+  "author": "agent-index",
+  "license": "proprietary",
+  "category": "strategy",
+  "agent_index_min_version": "2.0.0",
+  "api": [
+    "create-strategy",
+    "edit-strategy",
+    "manage-sources",
+    "run-briefing",
+    "manage-opportunities",
+    "share-strategy",
+    "strategy-review",
+    "strategy-tutorial"
+  ],
+  "dependencies": [],
+  "external_dependencies": [
+    {
+      "system": "Gmail / Outlook / other email provider",
+      "access_required": "Read email messages by label or folder (only if email-based sources are configured)",
+      "contact": "org admin",
+      "required": false
+    },
+    {
+      "system": "Web search / RSS",
+      "access_required": "Fetch web content and RSS feeds (only if web-based sources are configured)",
+      "contact": "org admin",
+      "required": false
+    }
+  ],
+  "eol_date": null,
+  "marketplace_url": "https://github.com/agent-index/agent-index-marketplace-strategy",
+  "support_url": "https://agent-index.ai/support"
+}
