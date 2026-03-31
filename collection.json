@@ -1,7 +1,7 @@
 {
   "name": "strategy",
   "display_name": "Strategy",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Build, evaluate, and evolve named strategies. Define canonical strategy references, configure information sources, run briefings that surface opportunities, and maintain a prioritized opportunity registry — privately or shared with collaborators.",
   "author": "agent-index",
   "license": "proprietary",

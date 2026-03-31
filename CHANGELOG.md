@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.2 — 2026-03-31
+
+### Changed
+- Clarified sharing model description in README: private strategies now explicitly noted as local workspace (`members/{hash}/strategies/`, native file tools), not remote. Aligns with tool-selection guidance already present in task workflows.
+
+---
+
+## 1.0.1
+
+### Changed
+- Version bump for infrastructure alignment (see 1.0.0 changelog below).
+
+---
+
 ## 1.0.0
 
 Initial release.

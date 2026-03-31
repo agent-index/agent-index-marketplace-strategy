@@ -42,7 +42,7 @@ A collection for building, evaluating, and evolving named strategies through age
 
 ## Sharing Model
 
-Strategies start private in `/members/{hash}/strategies/`. When shared, they move to the org's shared strategies path on the remote filesystem (default `/shared/strategies/`, configurable by org admin, accessed via `aifs_*` MCP tools). Two roles: **owner** (controls canonical reference) and **collaborator** (can do everything else). Non-owners who edit the canonical reference are warned but not blocked — filesystem permissions are the real enforcement.
+Strategies start private in the member's **local** workspace (`members/{hash}/strategies/`, accessed via native file tools). When shared, they are promoted to the org's shared strategies path on the remote filesystem (default `/shared/strategies/`, configurable by org admin, accessed via `aifs_*` MCP tools). Two roles: **owner** (controls canonical reference) and **collaborator** (can do everything else). Non-owners who edit the canonical reference are warned but not blocked — filesystem permissions are the real enforcement.
 
 ## Org Admin Setup
 
@@ -53,4 +53,4 @@ During collection install, the org admin configures:
 
 ## Version
 
-1.0.0
+1.0.2
