@@ -1,7 +1,7 @@
 ---
 name: strategy-tutorial
 type: skill
-version: 1.0.0
+version: 1.0.2
 collection: strategy
 description: Explains the strategy collection to members — its concepts, workflows, and how to be productive with it — through a guided tour or targeted answers to specific questions. Covers strategy creation, sources, briefings, opportunities, sharing, and reviews.
 stateful: false
@@ -86,7 +86,7 @@ Opportunities are the long-term memory of the system. Every opportunity surfaced
 
 Each opportunity tracks three dates: when it was identified, when it was last evaluated (by a briefing or review), and when it was last updated (priority changed, notes added, etc.). Combined with the priority (1–5) and status, this gives you a complete picture of your strategic landscape.
 
-Statuses flow naturally: an opportunity starts as `pending_review` until you assign a priority, then becomes `active`. From there it can move to `pursued` (you're acting on it), `deferred` (not now, but not dismissed), or `dismissed` (no longer relevant). Opportunities are never deleted — even dismissed ones stay in the registry for historical reference.
+Statuses follow a general pattern: an opportunity starts as `pending_review` until you assign a priority, then becomes `active`. From there it can move to `pursued` (you're acting on it), `deferred` (not now, but not dismissed), or `dismissed` (no longer relevant). Opportunities may also move to `reassessing` when you edit the strategy — this flags them for fresh evaluation against your updated direction. Opportunities are never deleted — even dismissed ones stay in the registry for historical reference.
 
 You can filter and sort the registry by any combination of priority, status, and dates. "Show me all active priority 1 opportunities" or "What hasn't been evaluated in the last month?" gives you exactly the view you need.
 
