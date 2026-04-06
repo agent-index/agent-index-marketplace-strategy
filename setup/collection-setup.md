@@ -1,7 +1,7 @@
 ---
 name: strategy-collection-setup
 type: collection-setup
-version: 1.0.0
+version: 1.0.2
 collection: strategy
 description: Org-admin setup interview for the Strategy collection
 upgrade_compatible: true
@@ -96,3 +96,9 @@ This setup configures how the Strategy collection works across your org. It cove
 
 ### Requires Admin Attention
 - Any new parameters introduced in a new version are surfaced to the admin during upgrade
+
+### Requires Member Attention
+None for PATCH/MINOR upgrades. MAJOR version upgrades will document required member actions here.
+
+### Migration Notes
+- v1.0 → future versions: migration notes will be added here as new MAJOR versions are published.

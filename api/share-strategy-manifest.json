@@ -1,0 +1,22 @@
+{
+  "name": "share-strategy",
+  "type": "task",
+  "display_name": "Share Strategy",
+  "collection": "strategy",
+  "collection_version": "1.0.2",
+  "version": "1.0.0",
+  "eol_date": null,
+  "eol_warning_days": 60,
+  "stateful": false,
+  "produces_artifacts": false,
+  "produces_shared_artifacts": true,
+  "setup_template": "share-strategy-setup.md",
+  "dependency_status": "complete",
+  "missing_dependencies": [],
+  "parameter_provenance": {},
+  "dependencies": { "skills": [], "tasks": [] },
+  "external_dependencies": [],
+  "optional_external_dependencies": [],
+  "reads_from": "/shared/strategies/",
+  "writes_to": "/shared/strategies/"
+}
