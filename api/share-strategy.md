@@ -1,7 +1,7 @@
 ---
 name: share-strategy
 type: task
-version: 1.0.0
+version: 1.0.2
 collection: strategy
 description: Promotes a private strategy to the shared space and invites collaborators. The original owner retains ownership. Collaborators can do everything except edit the canonical reference without a warning.
 stateful: false

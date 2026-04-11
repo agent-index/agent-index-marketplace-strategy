@@ -1,7 +1,7 @@
 ---
 name: manage-opportunities-setup
 type: setup
-version: 1.0.0
+version: 1.0.2
 collection: strategy
 description: Setup for the manage-opportunities task
 target: manage-opportunities

@@ -1,7 +1,7 @@
 ---
 name: run-briefing
 type: task
-version: 1.0.0
+version: 1.0.2
 collection: strategy
 description: Pulls unprocessed items from configured sources, evaluates them against the canonical strategy reference, surfaces new opportunities with suggested priorities, re-evaluates existing opportunities, and requires explicit priority decisions before finalizing.
 stateful: true

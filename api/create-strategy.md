@@ -1,7 +1,7 @@
 ---
 name: create-strategy
 type: task
-version: 1.0.0
+version: 1.0.2
 collection: strategy
 description: Creates a new named strategy with a canonical reference document, empty source and opportunity registries, and the full directory structure — in the member's private workspace or the shared space depending on org configuration.
 stateful: false

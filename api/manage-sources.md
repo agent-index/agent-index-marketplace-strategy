@@ -1,7 +1,7 @@
 ---
 name: manage-sources
 type: task
-version: 1.0.0
+version: 1.0.2
 collection: strategy
 description: Add, edit, remove, and test information sources for a strategy. Sources are free-form — the member describes where to pull information and Claude handles the mechanics. Each source tracks its own cursor to prevent double-processing.
 stateful: false

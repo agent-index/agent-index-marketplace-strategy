@@ -4,7 +4,7 @@
   "display_name": "Manage Sources",
   "collection": "strategy",
   "collection_version": "1.0.2",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "eol_date": null,
   "eol_warning_days": 60,
   "stateful": false,
@@ -14,8 +14,14 @@
   "dependency_status": "complete",
   "missing_dependencies": [],
   "parameter_provenance": {},
-  "dependencies": { "skills": [], "tasks": [] },
-  "external_dependencies": ["Gmail / Outlook / other email provider (conditional)", "Web search / RSS (conditional)"],
+  "dependencies": {
+    "skills": [],
+    "tasks": []
+  },
+  "external_dependencies": [
+    "Gmail / Outlook / other email provider (conditional)",
+    "Web search / RSS (conditional)"
+  ],
   "optional_external_dependencies": [],
   "reads_from": null,
   "writes_to": null
