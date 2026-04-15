@@ -22,7 +22,7 @@ Initial release.
 
 Aligned with agent-index v2.0.0 remote filesystem architecture. No functional changes to strategy workflows.
 
-**Breaking:** Requires `agent_index_min_version: 2.0.0`. The agent-index-filesystem MCP server must be available for shared strategy operations.
+**Breaking:** Requires `agent_index_min_version: 2.0.0`. Remote filesystem access via `aifs_*` tools must be available for shared strategy operations.
 
 - Updated `agent_index_min_version` in `collection.json` from `1.0.0` to `2.0.0`
 - Added `reads_from` and `writes_to` paths to `share-strategy.md` (was `null` despite `produces_shared_artifacts: true`)

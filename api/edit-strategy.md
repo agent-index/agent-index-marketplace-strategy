@@ -45,7 +45,7 @@ On demand, whenever the member needs to update their strategic reference.
 
 Read `collection-setup-responses.md` via `aifs_read` to get `shared_strategies_path`.
 
-**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` MCP tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
+**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
 
 If the member named a strategy in their invocation: search for it in both the member's private workspace (`/members/{member_hash}/strategies/`) and the shared space (`{shared_strategies_path}`).
 

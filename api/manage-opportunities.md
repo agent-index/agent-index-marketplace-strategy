@@ -41,7 +41,7 @@ On demand, whenever the member wants to review or manage their opportunity lands
 
 Read `collection-setup-responses.md` via `aifs_read` to get `shared_strategies_path`.
 
-**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` MCP tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
+**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
 
 If the member named a strategy: find it. If not: list available strategies and ask.
 

@@ -16,7 +16,7 @@ This setup configures how the Strategy collection works across your org. It cove
 ## Prerequisites
 
 - You have org admin credentials in agent-index
-- The remote filesystem is accessible (via `aifs_*` MCP tools)
+- The remote filesystem is accessible (via `aifs_*` tools)
 - The `/shared/strategies/` directory exists and is writable on the remote filesystem (or you have IT create it before proceeding)
 
 ---
@@ -26,7 +26,7 @@ This setup configures how the Strategy collection works across your org. It cove
 ### Shared Strategies Directory
 
 **shared_strategies_path**
-- Description: The remote filesystem path where shared strategies are stored (accessed via `aifs_*` MCP tools). When a member shares a strategy for collaboration, it lands here. Private strategies remain in the member's own workspace.
+- Description: The remote filesystem path where shared strategies are stored (accessed via `aifs_*` tools). When a member shares a strategy for collaboration, it lands here. Private strategies remain in the member's own workspace.
 - Applies to: share-strategy, run-briefing (for shared strategies), manage-opportunities (for shared strategies)
 - Interview prompt: "Where should shared strategies be stored? The default is `/shared/strategies/` — does that work for your org, or do you need a different path?"
 - Accepted values: Any valid remote filesystem path (under `/shared/`)
