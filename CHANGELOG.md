@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3] — 2026-04-19
+
+### Added
+- **Natural language trigger phrases in `collection.json`.** API entries now include trigger arrays that map conversational phrases to capabilities, powering the routing layer introduced in agent-index-core 3.0.5. Members can say things like "create a strategy" or "run my briefing" instead of using `@ai:` alias syntax. Triggers are customizable per-member via `routing.json`.
+
+---
+
 ## [1.0.2] — 2026-03-31
 
 ### Changed
