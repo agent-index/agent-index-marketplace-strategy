@@ -1,21 +1,21 @@
 {
   "name": "strategy",
   "display_name": "Strategy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Build, evaluate, and evolve named strategies. Define canonical strategy references, configure information sources, run briefings that surface opportunities, and maintain a prioritized opportunity registry — privately or shared with collaborators.",
   "author": "agent-index",
   "license": "proprietary",
   "category": "strategy",
   "agent_index_min_version": "3.0.0",
   "api": [
-    "create-strategy",
-    "edit-strategy",
-    "manage-sources",
-    "run-briefing",
-    "manage-opportunities",
-    "share-strategy",
-    "strategy-review",
-    "strategy-tutorial"
+    {"name":"create-strategy","triggers":[{"phrase":"create a strategy","capability":"create-strategy","description":"Define a new named strategy"},{"phrase":"strategy for","capability":"create-strategy","description":"Build a strategy for a specific area"},{"phrase":"strategic plan for","capability":"create-strategy","description":"Create a structured strategic plan"},{"phrase":"new strategy","capability":"create-strategy","description":"Start a new strategy from scratch"}]},
+    {"name":"edit-strategy","triggers":[{"phrase":"edit strategy","capability":"edit-strategy","description":"Modify an existing strategy"},{"phrase":"update the strategy for","capability":"edit-strategy","description":"Revise a strategy's content or structure"},{"phrase":"change my strategy","capability":"edit-strategy","description":"Make changes to a named strategy"}]},
+    {"name":"manage-sources","triggers":[{"phrase":"manage my sources","capability":"manage-sources","description":"Configure information sources for a strategy"},{"phrase":"add a source","capability":"manage-sources","description":"Add a new information source to a strategy"},{"phrase":"strategy sources","capability":"manage-sources","description":"View and manage strategy information feeds"}]},
+    {"name":"run-briefing","triggers":[{"phrase":"run my briefing","capability":"run-briefing","description":"Execute a strategy briefing from configured sources"},{"phrase":"morning briefing","capability":"run-briefing","description":"Run the daily strategy briefing"},{"phrase":"daily briefing","capability":"run-briefing","description":"Generate today's strategy intelligence briefing"},{"phrase":"brief me","capability":"run-briefing","description":"Run a briefing across strategy sources"}]},
+    {"name":"manage-opportunities","triggers":[{"phrase":"show my opportunities","capability":"manage-opportunities","description":"View the opportunity registry"},{"phrase":"what opportunities do we have","capability":"manage-opportunities","description":"List tracked strategic opportunities"},{"phrase":"opportunity list","capability":"manage-opportunities","description":"Display prioritized opportunities"}]},
+    {"name":"share-strategy","triggers":[{"phrase":"share my strategy","capability":"share-strategy","description":"Share a strategy with other org members"},{"phrase":"publish strategy","capability":"share-strategy","description":"Make a strategy visible to collaborators"}]},
+    {"name":"strategy-review","triggers":[{"phrase":"review my strategy","capability":"strategy-review","description":"Evaluate a strategy's health and progress"},{"phrase":"strategy health check","capability":"strategy-review","description":"Assess how a strategy is performing"},{"phrase":"how's my strategy doing","capability":"strategy-review","description":"Quick status on a named strategy"}]},
+    {"name":"strategy-tutorial","triggers":[{"phrase":"how does strategy work","capability":"strategy-tutorial","description":"Learn how to use strategy features"},{"phrase":"strategy tutorial","capability":"strategy-tutorial","description":"Get a guided tour of strategy capabilities"}]}
   ],
   "dependencies": [],
   "external_dependencies": [
