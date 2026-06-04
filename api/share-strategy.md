@@ -1,7 +1,7 @@
 ---
 name: share-strategy
 type: task
-version: 1.1.0
+version: 1.1.1
 collection: strategy
 description: Shares a private strategy from the member's own remote space using per-person grants — share with X (read), make X a collaborator (read+write), or share with the org (everyone reads). The owner retains ownership; content never moves to /shared. Discovery happens via a pointer file in /shared/strategies-index/.
 stateful: false
@@ -73,12 +73,13 @@ On confirmation:
 1. **Copy** the entire strategy directory from the local private workspace to `id:{member_folder_id}/strategies/{slug}/` via `aifs_write` (all files — strategy.md, sources.json, opportunities.json, strategy-changelog.jsonl, briefings/, state/). If `aifs_exists("id:{member_folder_id}/strategies/{slug}")` already: ask to choose a different slug. Halt on collision.
 2. **Capture the folder ID:** `aifs_stat("id:{member_folder_id}/strategies/{slug}")` → record its `id` as `folder_id` (adapter 2.5.0+).
 3. **Update the shared copy's `strategy.md`:** `shared: true`, `shared_path: null`, populate `collaborators` (display_name/member_hash/email/added_date per person, with their level), `last_updated` today.
-4. **Apply the grants** — compose ONE `permission-change-helper` spec with an `op: "share"` per grant on resource `id:{member_folder_id}/strategies/{slug}/`:
+4. **Apply the grants** — compose ONE `permission-change-helper` spec with an `op: "share"` per grant on resource `id:{folder_id}` (the **exact** strategy-folder Drive ID captured in step 2 — NOT the anchor-plus-relative-path form; permission-helper-go 0.4.0+ accepts only the bare `id:{folderId}` form, and granting the precise folder is the least-privilege surface):
    - each read-person → `role: "reader"`
    - each collaborator → `role: "writer"`
    - org level → recipient `{all_members_group}`, `role: "reader"`
-   The member (owner) reviews the page and **Accepts** — grants apply under their own credentials. Never call `aifs_share` directly. On `rejected`/`page_closed`: nothing was granted — clean up the copied folder is NOT possible for members (no delete); instead overwrite the copied `strategy.md` with `status: "abandoned-share"` and tell the member to re-run when ready (the admin can remove the folder if desired).
-5. **Write the pointer** to `/shared/strategies-index/{owner_hash}-{slug}.json` via `aifs_write`:
+   The member (owner) reviews the page and **Accepts** — grants apply under their own credentials. Never call `aifs_share` directly.
+   **HARD GATE — wait for the outcome file and read it.** Do NOT proceed to step 5 (or any later step) until the helper's outcome JSON reports `"outcome": "applied"`. Never assume success, never proceed "pending Accept" — a pointer written before the grants exist advertises access that does not exist (recipients will discover the strategy and hit ACCESS_DENIED). On `rejected`/`page_closed`/`timed_out`/`validation_error`/any other outcome: nothing was granted — members cannot delete the copied folder; overwrite the copied `strategy.md` with `status: "abandoned-share"`, write NO pointer, and tell the member to re-run when ready (the admin can remove the folder if desired).
+5. **Write the pointer** (only after step 4 reports `applied`) to `/shared/strategies-index/{owner_hash}-{slug}.json` via `aifs_write`:
    ```json
    {
      "type": "strategy",
@@ -120,6 +121,7 @@ Sharing exposes the member's strategic thinking — keep the tone encouraging. B
 
 - `member_folder_id` missing from registry → halt with the backfill message (Step 1).
 - Unregistered collaborator → cannot be granted (Drive needs a real account); offer to share once they're invited to the org.
-- Helper outcome `rejected` / `page_closed` → no grants applied; see Step 4.4.
+- Helper outcome anything other than `applied` (`rejected` / `page_closed` / `timed_out` / `validation_error` / `partial_failure`) → no (or incomplete) grants; see the step 4 hard gate. On `partial_failure`: report which grants applied, write the pointer with ONLY the applied grants in `scope`, and offer to retry the failed ones via edit-strategy.
+- Requires `permission-helper-go` **0.4.0+** (ID-anchor resource support). On a `validation_error` mentioning `id:` resources, the member's binary is outdated — direct them to `@ai:update` (binary sync runs in Phase 1).
 - Slug collision in the member's own space → choose a different slug.
 - Ownership transfer during sharing → not supported in 1.1.0 (the folder lives in the owner's member space); transfer = the new owner shares their own copy. Direct the member accordingly.

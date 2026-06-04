@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.1] — 2026-06-04
+
+### Fixed (from test-plan §3 live run on testproduction)
+
+- **Helper specs now use the bare `id:{folder_id}` resource form** (the exact strategy folder's Drive ID, captured via `aifs_stat` at share time) instead of `id:{member_folder_id}/strategies/{slug}/`. permission-helper-go ≤0.3.0 rejected ALL id-anchor resources (`resource must be a string starting with "/"`), so v1.1.0 sharing could never apply a grant; 0.4.0 accepts the bare-ID form only. Granting the precise folder is also the least-privilege surface. **Requires permission-helper-go 0.4.0+.**
+- **Pointer writes hard-gated on the helper outcome file** reporting `"outcome": "applied"` (share-strategy step 4→5; edit-strategy access changes). The §3 run wrote pointers on assumed success while every grant had been rejected — leaving discovery records advertising access that didn't exist. `partial_failure` now writes the pointer with only the applied grants.
+
+---
+
 ## [1.1.0] — 2026-06-03
 
 ### Changed — owned-content sharing model (replaces the shared-directory model)

@@ -1,7 +1,7 @@
 ---
 name: edit-strategy
 type: task
-version: 1.1.0
+version: 1.1.1
 collection: strategy
 description: Modifies the canonical strategy reference document. Warns non-owners but does not block. Every edit is logged to the append-only changelog with who, what, and why.
 stateful: false
@@ -134,7 +134,7 @@ On confirmation:
 
 3. Update `state/current-context.md` — regenerate the Strategic Position summary to reflect the updated strategy content.
 
-4. If the strategy is shared and its title or access changed: **overwrite** its pointer at `/shared/strategies-index/{owner_hash}-{slug}.json` to match (title/scope). Access changes (add/remove readers or collaborators, add/remove org-read, unshare entirely) go through `permission-change-helper` (`share`/`unshare` ops on `id:{member_folder_id}/strategies/{slug}/`, owner Accepts) and the pointer's `scope` is overwritten to match — unsharing entirely sets `"scope": "revoked"`. **Never delete** the pointer or any remote file (members cannot trash — soft-delete convention, standards.md). There is no shared strategies-manifest; the per-item pointer is the only discovery record.
+4. If the strategy is shared and its title or access changed: **overwrite** its pointer at `/shared/strategies-index/{owner_hash}-{slug}.json` to match (title/scope). Access changes (add/remove readers or collaborators, add/remove org-read, unshare entirely) go through `permission-change-helper` (`share`/`unshare` ops on resource `id:{folder_id}` — the strategy folder's exact Drive ID from the pointer or the local copy's `shared_path`; bare-ID form only, permission-helper-go 0.4.0+) with the owner's Accept. **HARD GATE:** wait for the helper outcome file and only update the pointer's `scope` after `"outcome": "applied"` — never on assumed success. Unsharing entirely sets `"scope": "revoked"`. **Never delete** the pointer or any remote file (members cannot trash — soft-delete convention, standards.md). There is no shared strategies-manifest; the per-item pointer is the only discovery record.
 
 5. Confirm to member:
    > "Strategy '{name}' has been updated. {N} section(s) changed. The changelog has been updated."
