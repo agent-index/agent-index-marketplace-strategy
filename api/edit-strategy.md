@@ -1,7 +1,7 @@
 ---
 name: edit-strategy
 type: task
-version: 1.0.2
+version: 1.1.0
 collection: strategy
 description: Modifies the canonical strategy reference document. Warns non-owners but does not block. Every edit is logged to the append-only changelog with who, what, and why.
 stateful: false
@@ -43,11 +43,11 @@ On demand, whenever the member needs to update their strategic reference.
 
 ### Step 1: Identify Strategy
 
-Read `collection-setup-responses.md` via `aifs_read` to get `shared_strategies_path`.
+Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` (read the pointer files, filter to entries where you're a reader/collaborator or `org_read` is true and `scope` is not `"revoked"`) and opened at `id:{folder_id}/...` from their pointer. Never address another member's space by `/members/...` path.
 
-If the member named a strategy in their invocation: search for it in both the member's private workspace (`/members/{member_hash}/strategies/`) and the shared space (`{shared_strategies_path}`).
+If the member named a strategy in their invocation: search for it in their local private workspace, their own shared strategies (`id:{member_folder_id}/strategies/`), and the pointer index (strategies shared with them).
 
 If the member did not name a strategy: list all strategies the member has access to (private + shared) and ask which one to edit.
 
@@ -134,7 +134,7 @@ On confirmation:
 
 3. Update `state/current-context.md` — regenerate the Strategic Position summary to reflect the updated strategy content.
 
-4. If the strategy is shared: update the `strategies-manifest.json` entry via `aifs_read`/`aifs_write` (if any fields have changed).
+4. If the strategy is shared and its title or access changed: **overwrite** its pointer at `/shared/strategies-index/{owner_hash}-{slug}.json` to match (title/scope). Access changes (add/remove readers or collaborators, add/remove org-read, unshare entirely) go through `permission-change-helper` (`share`/`unshare` ops on `id:{member_folder_id}/strategies/{slug}/`, owner Accepts) and the pointer's `scope` is overwritten to match — unsharing entirely sets `"scope": "revoked"`. **Never delete** the pointer or any remote file (members cannot trash — soft-delete convention, standards.md). There is no shared strategies-manifest; the per-item pointer is the only discovery record.
 
 5. Confirm to member:
    > "Strategy '{name}' has been updated. {N} section(s) changed. The changelog has been updated."
@@ -163,7 +163,7 @@ Never silently merge changes. Every proposed change must be confirmed by the mem
 
 ### Edge Cases
 
-If the member tries to edit a strategy that has been shared but they're accessing the private copy: warn them that the private copy is a pre-share snapshot and the active version is in the shared space. Offer to edit the shared version instead.
+If the member tries to edit a strategy that has been shared but they're accessing the local private copy: warn them that the local copy is a pre-share snapshot and the active version is the shared copy in their member space (`id:{member_folder_id}/strategies/{slug}/`). Offer to edit the shared version instead.
 
 If the strategy.md file is corrupted or unparseable: surface the issue and suggest the member check the file manually or contact their org admin.
 

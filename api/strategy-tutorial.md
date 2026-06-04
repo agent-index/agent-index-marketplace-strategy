@@ -1,7 +1,7 @@
 ---
 name: strategy-tutorial
 type: skill
-version: 1.0.2
+version: 1.1.0
 collection: strategy
 description: Explains the strategy collection to members — its concepts, workflows, and how to be productive with it — through a guided tour or targeted answers to specific questions. Covers strategy creation, sources, briefings, opportunities, sharing, and reviews.
 stateful: false
@@ -94,9 +94,9 @@ You can filter and sort the registry by any combination of priority, status, and
 
 Strategies start in your private workspace. Your strategic thinking, your sources, your opportunities — all private until you decide otherwise.
 
-When you're ready to collaborate, `@ai:share-strategy` promotes the strategy to the shared space. You invite collaborators who can then run briefings, manage sources, and evaluate opportunities alongside you.
+When you're ready to collaborate, `@ai:share-strategy` copies the strategy into your own private space on the remote filesystem and grants access to exactly the people you choose. The model is simple: *share with someone* — they can read it; *make someone a collaborator* — they can read and write (run briefings, manage sources, evaluate opportunities alongside you); *share with the org* — everybody can read it. Nobody you haven't granted can see it. Others discover strategies shared with them through a small pointer index — the content itself stays in your space, under your control.
 
-The sharing model is simple: you're the owner, everyone else is a collaborator. Collaborators can do everything — the one guardrail is the canonical strategy reference. If a collaborator tries to edit the strategy document itself, the system warns them that changes to the canonical reference should go through the owner. It doesn't block them — but it makes the governance visible.
+You're the owner; collaborators can do everything except one guardrail — the canonical strategy reference. If a collaborator tries to edit the strategy document itself, the system warns them that changes to the canonical reference should go through the owner. It doesn't block them — but it makes the governance visible.
 
 This keeps the canonical reference coherent. Multiple people can contribute to the information gathering and opportunity evaluation, but the strategic direction remains owned.
 

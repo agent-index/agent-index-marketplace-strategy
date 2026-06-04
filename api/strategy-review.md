@@ -1,7 +1,7 @@
 ---
 name: strategy-review
 type: task
-version: 1.0.2
+version: 1.1.0
 collection: strategy
 description: Deep review of all active opportunities against the current canonical strategy reference — without pulling new source material. Used for periodic resets, quarterly reviews, or after significant strategy edits.
 stateful: false
@@ -43,9 +43,9 @@ Manual invocation. Suggested cadence: monthly or quarterly, or after any signifi
 
 ### Step 1: Identify Strategy and Load Context
 
-Read `collection-setup-responses.md` via `aifs_read` to get `shared_strategies_path`.
+Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened at `id:{folder_id}/...` from their pointer.
 
 If the member named a strategy: find it. If not: list available strategies and ask.
 
@@ -220,7 +220,7 @@ Unlike briefing runs, review decisions do not block finalization. The member can
    }
    ```
 
-5. If the strategy is shared: update `strategies-manifest.json` via `aifs_read`/`aifs_write` with current `opportunity_count`.
+5. If the strategy is shared: no index update is needed — review results live in the strategy folder itself; the pointer at `/shared/strategies-index/` is discovery-only. (There is no shared strategies-manifest in 1.1.0+.)
 
 6. Confirm:
    > "Review complete. {N} opportunities reviewed, {M} changes applied. The review is saved at `{review path}`."

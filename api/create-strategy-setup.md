@@ -1,7 +1,7 @@
 ---
 name: create-strategy-setup
 type: setup
-version: 1.0.2
+version: 1.1.0
 collection: strategy
 description: Setup for the create-strategy task
 target: create-strategy
@@ -10,14 +10,14 @@ upgrade_compatible: true
 ---
 
 ## Setup Overview
-Validates that the Strategy collection setup has been completed at the org level, confirming that shared strategies path and strategy creation policies are configured. No member-specific configuration is required.
+Validates that the Strategy collection setup has been completed at the org level, confirming that strategy creation policies are configured. No member-specific configuration is required.
 
 ---
 
 ## Pre-Setup Checks
 - Collection setup completed (verify `collection-setup-responses.md` exists)
-- Shared strategies path is accessible
 - Member has write access to private workspace
+- `member_folder_id` present in `member-index.json` (needed only for share-right-away; if missing, note that '@ai:member-bootstrap' refreshes it)
 
 ---
 

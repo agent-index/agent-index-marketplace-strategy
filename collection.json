@@ -1,12 +1,12 @@
 {
   "name": "strategy",
   "display_name": "Strategy",
-  "version": "1.0.3",
-  "description": "Build, evaluate, and evolve named strategies. Define canonical strategy references, configure information sources, run briefings that surface opportunities, and maintain a prioritized opportunity registry — privately or shared with collaborators.",
+  "version": "1.1.0",
+  "description": "Build, evaluate, and evolve named strategies. Define canonical strategy references, configure information sources, run briefings that surface opportunities, and maintain a prioritized opportunity registry — privately or shared with collaborators. v1.1.0: owned-content sharing model — shared strategy content lives in the owner's private member space (addressed via ID anchors, id:{member_folder_id}/strategies/{slug}/) and is shared per-person via permission-change-helper grants: share = read, collaborator = read+write, share-with-org = all@ reader. Discovery via a pointer index at /shared/strategies-index/ (one JSON pointer per shared strategy; folder granted all@ writer via collaborative-acls.json at install Step 5.5). Replaces the /shared/strategies/ directory and strategies-manifest.json. Soft-delete/unshare conventions per core standards. Requires agent-index-core 3.8.0+ (member_folder_id) and filesystem adapter 2.5.0+ (ID anchors). Addresses the strategy row of the cross-collection access audit.",
   "author": "agent-index",
   "license": "proprietary",
   "category": "strategy",
-  "agent_index_min_version": "3.0.0",
+  "agent_index_min_version": "3.8.0",
   "api": [
     {"name":"create-strategy","triggers":[{"phrase":"create a strategy","capability":"create-strategy","description":"Define a new named strategy"},{"phrase":"strategy for","capability":"create-strategy","description":"Build a strategy for a specific area"},{"phrase":"strategic plan for","capability":"create-strategy","description":"Create a structured strategic plan"},{"phrase":"new strategy","capability":"create-strategy","description":"Start a new strategy from scratch"}]},
     {"name":"edit-strategy","triggers":[{"phrase":"edit strategy","capability":"edit-strategy","description":"Modify an existing strategy"},{"phrase":"update the strategy for","capability":"edit-strategy","description":"Revise a strategy's content or structure"},{"phrase":"change my strategy","capability":"edit-strategy","description":"Make changes to a named strategy"}]},

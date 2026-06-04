@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "description": "Declares the additive collaborative-write grants strategy needs. Read by install-collection Step 5.5 and provisioned via the permission-change-helper skill (admin reviews + Accepts). Never applied by aifs_share directly. Note: shared strategy CONTENT does not live under /shared — it lives in the owner's private member space and is shared via per-item grants (standards.md § 'Addressing: paths vs. ID anchors'). The only open-shared piece is the discovery index below.",
+  "acls": [
+    {
+      "path": "/shared/strategies-index/",
+      "recipient": "{all_members_group}",
+      "role": "writer",
+      "inherit": true,
+      "rationale": "The pointer-index folder for shared strategies. When an owner shares a strategy, share-strategy writes one pointer file here ({owner_hash}-{slug}.json with the item's folder_id, scope, etc.) so recipients can discover it and anchor on its Drive ID. One file per item — no contention. Members need writer to add/overwrite their own pointers (unshare = overwrite to scope:revoked — soft, never trash). Strategy content itself stays in the owner's private member space, protected by per-item grants."
+    }
+  ]
+}

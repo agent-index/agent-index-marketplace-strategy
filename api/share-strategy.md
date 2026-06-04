@@ -1,171 +1,104 @@
 ---
 name: share-strategy
 type: task
-version: 1.0.2
+version: 1.1.0
 collection: strategy
-description: Promotes a private strategy to the shared space and invites collaborators. The original owner retains ownership. Collaborators can do everything except edit the canonical reference without a warning.
+description: Shares a private strategy from the member's own remote space using per-person grants — share with X (read), make X a collaborator (read+write), or share with the org (everyone reads). The owner retains ownership; content never moves to /shared. Discovery happens via a pointer file in /shared/strategies-index/.
 stateful: false
 produces_artifacts: false
 produces_shared_artifacts: true
 dependencies:
-  skills: []
+  skills: ["permission-change-helper"]
   tasks: []
 external_dependencies: []
-reads_from: /shared/strategies/
-writes_to: /shared/strategies/
+reads_from: "id:{member_folder_id}/strategies/, /shared/strategies-index/"
+writes_to: "id:{member_folder_id}/strategies/, /shared/strategies-index/"
 ---
 
 ## About This Task
 
-Sharing a strategy moves it from the member's private workspace to the org's shared strategy space, making it visible to collaborators. This is an intentional, explicit act — the member decides when their strategic thinking is ready for collaboration.
+Sharing a strategy makes it visible to specific people, or to the whole org — **without moving it out of your control**. The strategy is copied from your local private workspace into **your own private remote member space** (`id:{member_folder_id}/strategies/{slug}/`), which nobody else can see by default. Sharing is then purely additive grants on that one folder:
 
-The sharing model is simple: one owner, everyone else is a collaborator. The owner controls the canonical strategy reference. Collaborators can run briefings, manage sources, evaluate opportunities, and do everything else — but if they try to edit the canonical reference, the system warns them and suggests going through the owner.
+- **Share with X** → X can **read** it.
+- **Make X a collaborator** → X can **read and write** (run briefings, manage sources, evaluate opportunities).
+- **Share with the org** → everyone can **read** it.
 
-The original private copy is retained as a snapshot with a cross-reference to the shared version.
+Only you (the owner) and your named collaborators can ever write. The org-wide level is read-only. Editing the canonical `strategy.md` remains an owner action — collaborators are warned and redirected to you (a task-level convention, as before).
+
+Discovery: each shared strategy gets one **pointer file** at `/shared/strategies-index/{owner_hash}-{slug}.json` so others can find it and open it by its Drive folder ID. Note the pointer (title, owner, scope) is org-readable — the *existence* of a shared strategy is visible org-wide even when its *content* is restricted to named people.
+
+The original local private copy is retained as a snapshot with a cross-reference.
 
 ### Inputs
 
-The member identifies which private strategy to share and optionally provides initial collaborators.
+The member identifies which private strategy to share, the sharing level(s), and the people (for per-person levels).
 
 ### Outputs
 
-- Strategy directory copied to `{shared_strategies_path}/{strategy-slug}/`
-- Updated `strategies-manifest.json`
-- Private copy updated with `shared_path` cross-reference
-- Collaborators recorded in the shared strategy's `strategy.md`
-
-### Cadence & Triggers
-
-On demand, when a member decides their private strategy is ready for collaboration.
+- Strategy copied to `id:{member_folder_id}/strategies/{slug}/` (the owner's private remote space)
+- Per-person / org grants applied via `permission-change-helper` (owner reviews + Accepts)
+- Pointer written to `/shared/strategies-index/{owner_hash}-{slug}.json`
+- Local private copy updated with cross-reference
 
 ---
 
 ## Workflow
 
-### Step 1: Read Configuration and Identify Strategy
+### Step 1: Resolve Identity and Strategy
 
-Read `collection-setup-responses.md` via `aifs_read` to get `shared_strategies_path`.
+Read `member-index.json` (local) for `member_hash` and **`member_folder_id`**. If `member_folder_id` is missing: re-read it from the member's own entry in `/members-registry.json` (known-path read) and cache it. If the registry entry also lacks it, halt: "Your private remote folder isn't registered for ID-anchored access yet — ask your admin to run the member-folder-id backfill." (See standards.md § "Addressing: paths vs. ID anchors".)
 
-**Tool selection:** Reading/writing the member's private workspace (`/members/{member_hash}/strategies/`) uses native Read/Write tools. Reading/writing the shared strategies path (`{shared_strategies_path}`) uses `aifs_*` tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
+**Tool selection:** the local private workspace (`members/{member_hash}/strategies/`) uses native Read/Write. The member's remote space (`id:{member_folder_id}/...`) and the pointer index (`/shared/strategies-index/`) use `aifs_*`.
 
-If the member named a strategy: find it in their private workspace (`/members/{member_hash}/strategies/`).
-
-If not: list their private strategies and ask which one to share.
-
-If the strategy is not found in private workspace: check if it's already shared — "That strategy is already in the shared space. You can manage collaborators with '@ai:edit-strategy'." Halt.
-
-Read the full strategy directory contents: `strategy.md`, `sources.json`, `opportunities.json`, `strategy-changelog.jsonl`, all briefings, `state/`.
-
-**On success:** Proceed to Step 2.
-
----
+If the member named a strategy: find it in their local private workspace. If not: list their private strategies and ask which to share. If already shared (private copy has `shared: true` + `shared_path`): "That strategy is already shared. Use '@ai:edit-strategy' to change who has access." Halt.
 
 ### Step 2: Review Before Sharing
 
-Present the strategy summary:
+Present the strategy summary (name, vision, sources, opportunities, briefings) and ask whether it's ready. If the member wants changes first, direct them to '@ai:edit-strategy' and halt. Unchanged from prior versions.
 
-> **Share this strategy?**
-> Name: {name}
-> Vision: {first sentence or two of vision, or "not yet defined"}
-> Sources: {count} configured
-> Opportunities: {count} tracked ({active count} active)
-> Briefings: {count} completed
->
-> This will make it visible at `{shared_strategies_path}/{slug}/`.
+### Step 3: Choose Sharing Level(s) and People
 
-Ask: "Would you like to make any changes before sharing, or is it ready?"
+Ask: "How do you want to share it?"
 
-If the member wants changes: direct them to '@ai:edit-strategy' first, then come back to share. Do not perform edits within this task.
+- **Share with specific people (read-only):** collect names; resolve each against the members registry (case-insensitive partial match on `display_name`, confirm; unregistered people cannot be granted — Drive grants need a real account).
+- **Add collaborators (read + write):** same resolution. Collaborators can run briefings, manage sources, and evaluate opportunities in the shared copy.
+- **Share with the org (everyone reads):** no names needed.
 
-**On success:** Proceed to Step 3.
+Levels combine (e.g., org-read + two collaborators). Summarize: who gets read, who gets write, whether the org can read — and remind: "the strategy itself stays in your private space; people only get exactly these grants. Its title/owner will be listed in the org-visible index."
 
----
-
-### Step 3: Invite Collaborators
-
-Ask: "Would you like to invite collaborators? Collaborators can run briefings, manage sources, and evaluate opportunities. You'll remain the owner — changes to the canonical strategy reference go through you."
-
-If yes, collect collaborators one at a time:
-- Ask: "Who would you like to invite?"
-- Resolve against the members registry (same pattern as projects: case-insensitive partial match on `display_name`, confirm, handle unregistered).
-- Continue until the member says they're done.
-
-If no: proceed with no collaborators. The strategy is shared but not actively assigned to anyone yet.
-
-**On success:** Proceed to Step 4.
-
----
-
-### Step 4: Confirm and Write
-
-Present a final summary:
-
-> **Sharing '{name}'**
-> Location: {shared_strategies_path}/{slug}/
-> Owner: {member display_name} (you)
-> {if collaborators}: Collaborators: {list of names}
->
-> Confirm?
-
-Wait for confirmation.
+### Step 4: Copy, Grant, Publish Pointer
 
 On confirmation:
 
-1. Check via `aifs_exists` that `{shared_strategies_path}/{slug}/` does not already exist. If it does: "A shared strategy with the slug '{slug}' already exists. Choose a different name or contact your org admin." Halt.
-
-2. Copy the entire strategy directory from the private workspace to `{shared_strategies_path}/{slug}/` via `aifs_write`. All files — strategy.md, sources.json, opportunities.json, strategy-changelog.jsonl, briefings/, state/.
-
-3. Update the shared `strategy.md`:
-   - Set `shared: true`
-   - Set `shared_path: null` (it IS the shared version)
-   - Populate `collaborators` array:
-     ```yaml
-     collaborators:
-       - display_name: "{name}"
-         member_hash: "{hash or null}"
-         email: "{email or null}"
-         added_date: "{today}"
-     ```
-   - Set `last_updated` to today
-
-4. Update the private `strategy.md`:
-   - Set `shared: true`
-   - Set `shared_path: "{shared_strategies_path}/{slug}/"` for cross-reference
-   - Set `last_updated` to today
-
-5. Read `strategies-manifest.json` at `{shared_strategies_path}` via `aifs_read` and add entry:
+1. **Copy** the entire strategy directory from the local private workspace to `id:{member_folder_id}/strategies/{slug}/` via `aifs_write` (all files — strategy.md, sources.json, opportunities.json, strategy-changelog.jsonl, briefings/, state/). If `aifs_exists("id:{member_folder_id}/strategies/{slug}")` already: ask to choose a different slug. Halt on collision.
+2. **Capture the folder ID:** `aifs_stat("id:{member_folder_id}/strategies/{slug}")` → record its `id` as `folder_id` (adapter 2.5.0+).
+3. **Update the shared copy's `strategy.md`:** `shared: true`, `shared_path: null`, populate `collaborators` (display_name/member_hash/email/added_date per person, with their level), `last_updated` today.
+4. **Apply the grants** — compose ONE `permission-change-helper` spec with an `op: "share"` per grant on resource `id:{member_folder_id}/strategies/{slug}/`:
+   - each read-person → `role: "reader"`
+   - each collaborator → `role: "writer"`
+   - org level → recipient `{all_members_group}`, `role: "reader"`
+   The member (owner) reviews the page and **Accepts** — grants apply under their own credentials. Never call `aifs_share` directly. On `rejected`/`page_closed`: nothing was granted — clean up the copied folder is NOT possible for members (no delete); instead overwrite the copied `strategy.md` with `status: "abandoned-share"` and tell the member to re-run when ready (the admin can remove the folder if desired).
+5. **Write the pointer** to `/shared/strategies-index/{owner_hash}-{slug}.json` via `aifs_write`:
    ```json
    {
+     "type": "strategy",
+     "owner": "{display_name}",
+     "owner_hash": "{member_hash}",
      "slug": "{slug}",
-     "name": "{name}",
-     "owner": "{owner display_name}",
-     "owner_hash": "{owner member_hash}",
-     "created": "{original created date}",
-     "shared_date": "{today}",
-     "last_briefing": "{most recent briefing date or null}",
-     "opportunity_count": {count},
-     "collaborators": {count}
+     "folder_id": "{folder_id from step 2}",
+     "scope": {"org_read": true|false, "readers": ["email", ...], "collaborators": ["email", ...]},
+     "title": "{strategy name}",
+     "shared_date": "{today}"
    }
    ```
-   Update `last_updated` on the manifest. Write the file via `aifs_write`.
+   Recipients discover shared strategies by reading this index and open them via `id:{folder_id}/...`.
+6. **Update the local private copy:** `shared: true`, `shared_path: "id:{member_folder_id}/strategies/{slug}/"`, `last_updated` today.
+7. **Append** a `strategy_shared` event to the shared copy's `strategy-changelog.jsonl`.
+8. Confirm to the member: who can read, who can write, whether the org can read, and that '@ai:edit-strategy' manages access from here.
 
-6. Append to the shared strategy's `strategy-changelog.jsonl` via `aifs_write`:
-   ```json
-   {
-     "timestamp": "{ISO 8601}",
-     "type": "strategy_shared",
-     "author_hash": "{member_hash}",
-     "author_name": "{display_name}",
-     "collaborators_added": ["{list of collaborator names}"],
-     "summary": "Strategy shared to {shared_strategies_path}/{slug}/ with {N} collaborators"
-   }
-   ```
+### Un-sharing (reference; performed via edit-strategy)
 
-7. Confirm to member:
-   > "Strategy '{name}' is now shared. Collaborators can find it at the shared strategies location."
-   > {if collaborators}: "{N} collaborators have been added."
-   > "You remain the owner. Collaborators can run briefings and manage opportunities. Changes to the canonical reference will go through you."
-   > "Manage collaborators anytime with '@ai:edit-strategy'."
+Revoking access = `permission-change-helper` `op: "unshare"` for the person (owner Accepts) + **overwrite** the pointer (update `scope`, or set `"scope": "revoked"` to unshare entirely). **Never delete remote files** — members cannot trash on the Shared Drive (soft-delete convention, standards.md).
 
 ---
 
@@ -173,26 +106,20 @@ On confirmation:
 
 ### Behavior
 
-Sharing a strategy is significant — the member is exposing their strategic thinking. Keep the tone encouraging and the process smooth.
-
-When adding collaborators, don't ask for assignments or roles. The sharing model is simple: owner and collaborators. No need for the complexity of role-based access — the ownership warning on canonical reference edits is sufficient governance.
+Sharing exposes the member's strategic thinking — keep the tone encouraging. Be explicit about the three levels and that write access is only ever named collaborators + owner.
 
 ### Constraints
 
-Never share a strategy that is already shared. If the member's private copy has `shared: true` and `shared_path` set, direct them to the shared version.
-
-Never modify the private copy's content during sharing — only update status fields and cross-reference.
-
-Never create a shared strategy that conflicts with an existing slug in the shared space.
+- Never share a strategy that is already shared (direct to edit-strategy).
+- Never modify the local private copy's content during sharing — only status fields and cross-reference.
+- Never call `aifs_share`/`aifs_unshare` directly — all grants via `permission-change-helper` with the owner's Accept.
+- Never delete remote files (members cannot trash) — all removal semantics are overwrite/mark (soft-delete).
+- The pointer's existence/title/owner are org-visible by design; if the member objects to even the title being visible, offer to use the slug as the title.
 
 ### Edge Cases
 
-If `strategies-manifest.json` doesn't exist: halt with "The strategies manifest is missing. Ask your org admin to run the Strategy collection setup."
-
-If a collaborator is unregistered (member_hash is null): record them by name only. Note: "{name} isn't in the org registry yet. They'll be listed as a collaborator but won't be automatically discoverable until they join agent-index."
-
-If the member wants to share but `strategies_require_private_stage` is `either` and they created it directly in shared space originally: this situation shouldn't arise (it would already be shared), but if it does, explain that the strategy is already shared.
-
-If the strategy slug collides with an existing shared strategy: offer to use a different slug or ask the member to rename.
-
-If the member wants to transfer ownership during sharing: accept it. Ask who the new owner should be, resolve against registry, and set them as owner in the shared copy. The original member becomes a collaborator.
+- `member_folder_id` missing from registry → halt with the backfill message (Step 1).
+- Unregistered collaborator → cannot be granted (Drive needs a real account); offer to share once they're invited to the org.
+- Helper outcome `rejected` / `page_closed` → no grants applied; see Step 4.4.
+- Slug collision in the member's own space → choose a different slug.
+- Ownership transfer during sharing → not supported in 1.1.0 (the folder lives in the owner's member space); transfer = the new owner shares their own copy. Direct the member accordingly.

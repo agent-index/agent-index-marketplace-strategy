@@ -3,8 +3,8 @@
   "type": "task",
   "display_name": "Share Strategy",
   "collection": "strategy",
-  "collection_version": "1.0.2",
-  "version": "1.0.2",
+  "collection_version": "1.1.0",
+  "version": "1.1.0",
   "eol_date": null,
   "eol_warning_days": 60,
   "stateful": false,
@@ -20,6 +20,6 @@
   },
   "external_dependencies": [],
   "optional_external_dependencies": [],
-  "reads_from": "/shared/strategies/",
-  "writes_to": "/shared/strategies/"
+  "reads_from": "id:{member_folder_id}/strategies/",
+  "writes_to": "/shared/strategies-index/"
 }

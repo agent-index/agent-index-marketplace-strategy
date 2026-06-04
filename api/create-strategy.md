@@ -1,9 +1,9 @@
 ---
 name: create-strategy
 type: task
-version: 1.0.2
+version: 1.1.0
 collection: strategy
-description: Creates a new named strategy with a canonical reference document, empty source and opportunity registries, and the full directory structure — in the member's private workspace or the shared space depending on org configuration.
+description: Creates a new named strategy with a canonical reference document, empty source and opportunity registries, and the full directory structure — always private in the member's workspace; sharing happens via share-strategy.
 stateful: false
 produces_artifacts: false
 produces_shared_artifacts: false
@@ -19,7 +19,7 @@ writes_to: null
 
 Creating a strategy establishes the canonical reference document — the living definition that all briefings, opportunity evaluations, and strategic decisions are measured against. This task guides the member through defining the strategy's name, vision, pillars, objectives, competitive landscape, constraints, and assumptions, then writes the full directory structure.
 
-Where the strategy is created depends on org configuration. If the org requires a private stage, the strategy is created in the member's private workspace at `/members/{member_hash}/strategies/{strategy-slug}/`. If the org allows either, the member chooses. Strategies created privately can later be shared via `@ai:share-strategy`.
+Strategies are always created in the member's private workspace at `members/{member_hash}/strategies/{strategy-slug}/`. If the org allows it (`strategies_require_private_stage: either`), the member may choose to share immediately — creation still happens privately, then hands off to `@ai:share-strategy`. Strategies can be shared at any later time the same way.
 
 ### Inputs
 
@@ -34,7 +34,7 @@ The member provides: strategy name and the canonical reference content — visio
 - `{strategy-path}/{strategy-slug}/briefings/` — empty briefings directory
 - `{strategy-path}/{strategy-slug}/state/current-context.md` — initial context file
 
-For shared strategies, also updates `strategies-manifest.json`.
+Strategies are always created **private** (local workspace, or the member's own private remote space). Sharing — including the immediate-share case — happens through `share-strategy`, which applies per-person grants and writes the discovery pointer. (There is no shared strategies-manifest in 1.1.0+.)
 
 ### Cadence & Triggers
 
@@ -47,13 +47,12 @@ Run once per strategy at inception. Not repeatable for the same strategy — if 
 ### Step 1: Read Org Configuration
 
 Read `collection-setup-responses.md` via `aifs_read` from the collection's setup directory. Extract:
-- `shared_strategies_path` — where shared strategies live (on the remote filesystem)
 - `strategies_require_private_stage` — `private_first` or `either`
 - `default_items_per_run` — default briefing cap
 
-Identify the running member's `member_hash` and `display_name` from session context.
+Identify the running member's `member_hash` and `display_name` from session context. Read `member-index.json` (local) for `member_folder_id` (used if the member wants the strategy created in their private *remote* space).
 
-**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the member's private *remote* space use `aifs_*` tools with the ID anchor `id:{member_folder_id}/strategies/...` (standards.md § "Addressing"). Never address member space by `/members/...` path.
 
 **On failure to read setup responses:** Check `aifs_auth_status()`. If `authenticated: false`, attempt automatic re-authentication via `aifs_authenticate` and retry the read. If re-auth fails or the read still fails: surface "The Strategy collection setup information couldn't be read. I tried to restore your connection but wasn't able to. Try '@ai:member-bootstrap' to troubleshoot, or contact your org admin." Halt.
 
@@ -68,9 +67,9 @@ Inform the member: "Strategies in your org start as private drafts. I'll create 
 Set `strategy_path` to `/members/{member_hash}/strategies/`.
 
 **If `strategies_require_private_stage` is `either`:**
-Ask: "Would you like to create this strategy privately (just for you, shareable later) or directly in the shared space (visible to collaborators immediately)?"
-- If private: set `strategy_path` to `/members/{member_hash}/strategies/`
-- If shared: set `strategy_path` to `{shared_strategies_path}`
+Ask: "Would you like to create this strategy privately (just for you, shareable later), or create it and share it right away?"
+- If private: set `strategy_path` to the local `members/{member_hash}/strategies/`
+- If share-right-away: create it privately first (same as above), then immediately hand off to `share-strategy`, which copies it to the member's own private remote space (`id:{member_folder_id}/strategies/{slug}/`), applies the chosen grants (share = read, collaborator = read+write, org = everyone reads), and writes the discovery pointer. Content never lives under `/shared` and is never visible beyond the people granted.
 
 **On success:** Proceed to Step 3.
 
@@ -123,7 +122,7 @@ Present a complete summary:
 > **New Strategy**
 > Name: {name}
 > Slug: {slug}
-> Location: {private workspace / shared space}
+> Location: {member's private workspace} {+ ", shared immediately after creation" if share-right-away}
 > Owner: {member display_name}
 >
 > Sections defined: {list sections with content}
@@ -155,7 +154,7 @@ On confirmation:
    collaborators: []
    created: {today YYYY-MM-DD}
    last_updated: {today YYYY-MM-DD}
-   shared: {true if created in shared space, false if private}
+   shared: false
    shared_path: null
    ---
 
@@ -228,19 +227,7 @@ On confirmation:
    Strategy created {today}.
    ```
 
-7. If created in shared space: read `strategies-manifest.json` at `{shared_strategies_path}` via `aifs_read`, add entry:
-   ```json
-   {
-     "slug": "{slug}",
-     "name": "{name}",
-     "owner": "{owner display_name}",
-     "owner_hash": "{owner member_hash}",
-     "created": "{today YYYY-MM-DD}",
-     "last_briefing": null,
-     "opportunity_count": 0
-   }
-   ```
-   Update `last_updated` on the manifest. Write the file via `aifs_write`.
+7. If the member chose share-right-away in Step 2: hand off to `share-strategy` now (it copies the new strategy to `id:{member_folder_id}/strategies/{slug}/`, applies the chosen grants via `permission-change-helper`, and writes the pointer to `/shared/strategies-index/`). There is no shared strategies-manifest to update.
 
 8. Confirm to member:
    > "Strategy '{name}' has been created. Next step: add sources with '@ai:manage-sources' so you have information flowing into your briefings. When you're ready, run '@ai:run-briefing' to evaluate source material against your strategy."
@@ -274,13 +261,13 @@ Never write to the filesystem before the Step 5 confirmation.
 
 Never generate a slug that collides with an existing strategy directory.
 
-If `strategies_require_private_stage` is `private_first`, never create a strategy directly in the shared space regardless of what the member requests. Explain: "Your org requires strategies to start as private drafts. You can share it with '@ai:share-strategy' when you're ready."
+If `strategies_require_private_stage` is `private_first`, never hand off to share-strategy at creation time regardless of what the member requests. Explain: "Your org requires strategies to start as private drafts. You can share it with '@ai:share-strategy' when you're ready."
 
 ### Edge Cases
 
 If the member provides a strategy name that generates a slug already in use: surface the conflict and offer alternatives.
 
-If `strategies-manifest.json` does not exist at the shared path when creating a shared strategy: surface: "The strategies manifest file is missing. This usually means the collection setup wasn't completed. Ask your org admin to run the Strategy collection setup." Halt.
+If the member chose share-right-away and `member_folder_id` is missing from `member-index.json`: complete the private creation, then surface: "Your member folder ID isn't recorded yet, so I can't share this right now. Run '@ai:member-bootstrap' to refresh it, then share with '@ai:share-strategy'."
 
 If the member provides a strategy name with only special characters that produce an empty slug: ask for a different name.
 

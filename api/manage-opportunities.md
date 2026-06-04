@@ -1,7 +1,7 @@
 ---
 name: manage-opportunities
 type: task
-version: 1.0.2
+version: 1.1.0
 collection: strategy
 description: View, filter, sort, update, and manage the master opportunity registry for a strategy. Supports priority changes, status transitions, notes, and filtering by priority, status, or date ranges.
 stateful: false
@@ -39,9 +39,9 @@ On demand, whenever the member wants to review or manage their opportunity lands
 
 ### Step 1: Identify Strategy
 
-Read `collection-setup-responses.md` via `aifs_read` to get `shared_strategies_path`.
+Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened at `id:{folder_id}/...` from their pointer (collaborators have write access).
 
 If the member named a strategy: find it. If not: list available strategies and ask.
 

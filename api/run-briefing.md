@@ -1,7 +1,7 @@
 ---
 name: run-briefing
 type: task
-version: 1.0.2
+version: 1.1.0
 collection: strategy
 description: Pulls unprocessed items from configured sources, evaluates them against the canonical strategy reference, surfaces new opportunities with suggested priorities, re-evaluates existing opportunities, and requires explicit priority decisions before finalizing.
 stateful: true
@@ -50,9 +50,9 @@ Manual invocation only. The member runs briefings when they want to process new 
 
 ### Step 1: Identify Strategy and Load Context
 
-Read `collection-setup-responses.md` via `aifs_read` to get `shared_strategies_path` and `default_items_per_run`.
+Read `collection-setup-responses.md` via `aifs_read` to get `default_items_per_run`. Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's private workspace (`/members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the shared strategies path (`{shared_strategies_path}`) use `aifs_*` tools (e.g., `aifs_read`, `aifs_write`, `aifs_exists`).
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened at `id:{folder_id}/...` from their pointer (collaborators have write access and can run briefings into the shared copy).
 
 If the member named a strategy: find it. If not: list available strategies and ask.
 
@@ -306,7 +306,7 @@ Determine the briefing number for today: check the briefings directory for exist
 4. Update `state/current-context.md`:
    Regenerate to reflect the updated strategic position, incorporating the new briefing findings, new opportunities, and any changes to existing opportunities.
 
-5. If the strategy is shared: update `strategies-manifest.json` via `aifs_read`/`aifs_write` with `last_briefing` date and current `opportunity_count`.
+5. If the strategy is shared: no index update is needed — briefing results live in the strategy folder itself, and the pointer at `/shared/strategies-index/` is discovery-only. (There is no shared strategies-manifest in 1.1.0+.)
 
 6. Append to `strategy-changelog.jsonl`:
    ```json
