@@ -1,7 +1,7 @@
 ---
 name: share-strategy
 type: task
-version: 1.1.1
+version: 1.1.2
 collection: strategy
 description: Shares a private strategy from the member's own remote space using per-person grants — share with X (read), make X a collaborator (read+write), or share with the org (everyone reads). The owner retains ownership; content never moves to /shared. Discovery happens via a pointer file in /shared/strategies-index/.
 stateful: false
@@ -17,7 +17,7 @@ writes_to: "id:{member_folder_id}/strategies/, /shared/strategies-index/"
 
 ## About This Task
 
-Sharing a strategy makes it visible to specific people, or to the whole org — **without moving it out of your control**. The strategy is copied from your local private workspace into **your own private remote member space** (`id:{member_folder_id}/strategies/{slug}/`), which nobody else can see by default. Sharing is then purely additive grants on that one folder:
+Sharing a strategy makes it visible to specific people, or to the whole org — **without moving it out of your control**. The strategy is copied from your local private workspace into **your own private remote member space** (`id:{member_folder_id}/strategies/{slug}/`) — your `Agent-Index-Private` folder in **your own My Drive**, which nobody else can see by default. You are the Drive owner of that folder, which is exactly what makes the grants below possible (core 3.9.0 model; Shared-Drive folders can only be shared by drive Managers). Sharing is then purely additive grants on that one folder:
 
 - **Share with X** → X can **read** it.
 - **Make X a collaborator** → X can **read and write** (run briefings, manage sources, evaluate opportunities).
@@ -46,7 +46,7 @@ The member identifies which private strategy to share, the sharing level(s), and
 
 ### Step 1: Resolve Identity and Strategy
 
-Read `member-index.json` (local) for `member_hash` and **`member_folder_id`**. If `member_folder_id` is missing: re-read it from the member's own entry in `/members-registry.json` (known-path read) and cache it. If the registry entry also lacks it, halt: "Your private remote folder isn't registered for ID-anchored access yet — ask your admin to run the member-folder-id backfill." (See standards.md § "Addressing: paths vs. ID anchors".)
+Read `member-index.json` (local) for `member_hash` and **`member_folder_id`**. If `member_folder_id` is missing: run `@ai:update` (its Migration 2 creates your `Agent-Index-Private` My Drive space and caches the ID) or `@ai:member-bootstrap` — then retry. There is no admin backfill under the 3.9.0 model; the member self-provisions. (See standards.md § "Addressing: paths vs. ID anchors".)
 
 **Tool selection:** the local private workspace (`members/{member_hash}/strategies/`) uses native Read/Write. The member's remote space (`id:{member_folder_id}/...`) and the pointer index (`/shared/strategies-index/`) use `aifs_*`.
 
@@ -99,7 +99,7 @@ On confirmation:
 
 ### Un-sharing (reference; performed via edit-strategy)
 
-Revoking access = `permission-change-helper` `op: "unshare"` for the person (owner Accepts) + **overwrite** the pointer (update `scope`, or set `"scope": "revoked"` to unshare entirely). **Never delete remote files** — members cannot trash on the Shared Drive (soft-delete convention, standards.md).
+Revoking access = `permission-change-helper` `op: "unshare"` for the person (owner Accepts) + **overwrite** the pointer (update `scope`, or set `"scope": "revoked"` to unshare entirely). **Never delete the pointer** — it lives on the Shared Drive where members cannot trash (soft-delete convention, standards.md). The strategy content in your own My Drive is yours to delete, but prefer archive-marking so changelogs and cross-references stay resolvable.
 
 ---
 
@@ -114,12 +114,12 @@ Sharing exposes the member's strategic thinking — keep the tone encouraging. B
 - Never share a strategy that is already shared (direct to edit-strategy).
 - Never modify the local private copy's content during sharing — only status fields and cross-reference.
 - Never call `aifs_share`/`aifs_unshare` directly — all grants via `permission-change-helper` with the owner's Accept.
-- Never delete remote files (members cannot trash) — all removal semantics are overwrite/mark (soft-delete).
+- Never delete pointer files or anything on the Shared Drive (members cannot trash there) — removal semantics on org surfaces are overwrite/mark (soft-delete). Content in the owner's My Drive is owner-deletable but archive-marking is preferred.
 - The pointer's existence/title/owner are org-visible by design; if the member objects to even the title being visible, offer to use the slug as the title.
 
 ### Edge Cases
 
-- `member_folder_id` missing from registry → halt with the backfill message (Step 1).
+- `member_folder_id` missing → direct the member to `@ai:update` / `@ai:member-bootstrap` (self-provisioning; Step 1).
 - Unregistered collaborator → cannot be granted (Drive needs a real account); offer to share once they're invited to the org.
 - Helper outcome anything other than `applied` (`rejected` / `page_closed` / `timed_out` / `validation_error` / `partial_failure`) → no (or incomplete) grants; see the step 4 hard gate. On `partial_failure`: report which grants applied, write the pointer with ONLY the applied grants in `scope`, and offer to retry the failed ones via edit-strategy.
 - Requires `permission-helper-go` **0.4.0+** (ID-anchor resource support). On a `validation_error` mentioning `id:` resources, the member's binary is outdated — direct them to `@ai:update` (binary sync runs in Phase 1).

@@ -1,7 +1,7 @@
 ---
 name: create-strategy
 type: task
-version: 1.1.0
+version: 1.1.1
 collection: strategy
 description: Creates a new named strategy with a canonical reference document, empty source and opportunity registries, and the full directory structure — always private in the member's workspace; sharing happens via share-strategy.
 stateful: false
@@ -52,7 +52,7 @@ Read `collection-setup-responses.md` via `aifs_read` from the collection's setup
 
 Identify the running member's `member_hash` and `display_name` from session context. Read `member-index.json` (local) for `member_folder_id` (used if the member wants the strategy created in their private *remote* space).
 
-**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the member's private *remote* space use `aifs_*` tools with the ID anchor `id:{member_folder_id}/strategies/...` (standards.md § "Addressing"). Never address member space by `/members/...` path.
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on the member's private *remote* space (their `Agent-Index-Private` folder in their own My Drive, core 3.9.0+) use `aifs_*` tools with the ID anchor `id:{member_folder_id}/strategies/...` (standards.md § "Addressing"). Never address member space by `/members/...` path.
 
 **On failure to read setup responses:** Check `aifs_auth_status()`. If `authenticated: false`, attempt automatic re-authentication via `aifs_authenticate` and retry the read. If re-auth fails or the read still fails: surface "The Strategy collection setup information couldn't be read. I tried to restore your connection but wasn't able to. Try '@ai:member-bootstrap' to troubleshoot, or contact your org admin." Halt.
 

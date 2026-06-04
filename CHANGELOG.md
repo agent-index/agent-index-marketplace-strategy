@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.2] — 2026-06-04
+
+### Changed (prose only — companion to core 3.9.0 My Drive member spaces)
+
+- Member space is now the owner's `Agent-Index-Private` folder in **their own My Drive** (core
+  3.9.0): share-strategy About/Step 1 updated — the owner OWNS the folder, which is what makes
+  owner-applied grants possible (closes finding **F12**: Shared-Drive folders can only be shared by
+  drive Managers, so 1.1.0/1.1.1 sharing failed at the owner's Accept with "insufficient
+  permissions").
+- `member_folder_id` self-provisions (`@ai:update` Migration 2 / `@ai:member-bootstrap`); the
+  admin-backfill halt message is retired.
+- Soft-delete nuance: pointers (Shared Drive) always overwrite-never-delete; content in the owner's
+  My Drive is owner-deletable but archive-marking is preferred.
+- No mechanics changes: anchors, bare-ID helper specs, outcome-gated pointers all as in 1.1.1.
+  **Requires agent-index-core 3.9.0+** (`agent_index_min_version` bumped). share-strategy → 1.1.2,
+  create-strategy → 1.1.1.
+
+---
+
 ## [1.1.1] — 2026-06-04
 
 ### Fixed (from test-plan §3 live run on testproduction)
