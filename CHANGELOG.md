@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.3] — 2026-06-05
+
+### Changed
+
+- **Hard gate amended (share-strategy 1.1.3, edit-strategy 1.1.2):** pointer writes proceed on the
+  outcome file reporting `applied` OR — when the file is missing or carries a page-lifecycle value
+  (`terminated`/`page_closed`) despite a confirmed Accept — an independent `aifs_get_permissions`
+  read confirming every requested grant. Encodes the §3-C finding (bug `20260605-62a14c43`): helper
+  ≤0.4.0 raced page-close when writing outcome files; 0.4.1 fixes the race (outcome persisted the
+  moment apply completes), and the verification fallback is retained as defense in depth.
+
+---
+
 ## [1.1.2] — 2026-06-04
 
 ### Changed (prose only — companion to core 3.9.0 My Drive member spaces)

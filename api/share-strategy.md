@@ -1,7 +1,7 @@
 ---
 name: share-strategy
 type: task
-version: 1.1.2
+version: 1.1.3
 collection: strategy
 description: Shares a private strategy from the member's own remote space using per-person grants — share with X (read), make X a collaborator (read+write), or share with the org (everyone reads). The owner retains ownership; content never moves to /shared. Discovery happens via a pointer file in /shared/strategies-index/.
 stateful: false
@@ -78,7 +78,7 @@ On confirmation:
    - each collaborator → `role: "writer"`
    - org level → recipient `{all_members_group}`, `role: "reader"`
    The member (owner) reviews the page and **Accepts** — grants apply under their own credentials. Never call `aifs_share` directly.
-   **HARD GATE — wait for the outcome file and read it.** Do NOT proceed to step 5 (or any later step) until the helper's outcome JSON reports `"outcome": "applied"`. Never assume success, never proceed "pending Accept" — a pointer written before the grants exist advertises access that does not exist (recipients will discover the strategy and hit ACCESS_DENIED). On `rejected`/`page_closed`/`timed_out`/`validation_error`/any other outcome: nothing was granted — members cannot delete the copied folder; overwrite the copied `strategy.md` with `status: "abandoned-share"`, write NO pointer, and tell the member to re-run when ready (the admin can remove the folder if desired).
+   **HARD GATE — verify the grants applied before proceeding.** Do NOT proceed to step 5 (or any later step) until EITHER (a) the helper's outcome JSON reports `"outcome": "applied"`, OR (b) — if the outcome file is missing or reports a page-lifecycle state (`terminated`/`page_closed`) despite the member confirming Accept — an independent `aifs_get_permissions("id:{folder_id}")` read confirms every requested grant is present (helper ≤0.4.0 raced page-close when writing outcomes; fixed in 0.4.1, fallback retained as defense in depth). Never assume success, never proceed "pending Accept" — a pointer written before the grants exist advertises access that does not exist (recipients will discover the strategy and hit ACCESS_DENIED). On `rejected`/`validation_error`/confirmed-absent grants: nothing was granted — members cannot delete the copied folder; overwrite the copied `strategy.md` with `status: "abandoned-share"`, write NO pointer, and tell the member to re-run when ready (the admin can remove the folder if desired).
 5. **Write the pointer** (only after step 4 reports `applied`) to `/shared/strategies-index/{owner_hash}-{slug}.json` via `aifs_write`:
    ```json
    {
