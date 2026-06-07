@@ -1,21 +1,173 @@
 {
   "name": "strategy",
   "display_name": "Strategy",
-  "version": "1.1.3",
-  "description": "Build, evaluate, and evolve named strategies. Define canonical strategy references, configure information sources, run briefings that surface opportunities, and maintain a prioritized opportunity registry — privately or shared with collaborators. v1.1.3: hard-gate amendment — pointer writes verify grants via the outcome file OR an independent aifs_get_permissions read (helper ≤0.4.0 raced page-close writing outcome files, bug 20260605-62a14c43; fixed in helper 0.4.1, fallback retained as defense in depth). v1.1.2: companion to core 3.9.0 My Drive member spaces — prose updates only (member space = Agent-Index-Private in the owner's own My Drive; owner-applied grants now permitted because the owner owns the folder; member_folder_id self-provisions via @ai:update Migration 2, admin backfill retired; soft-delete nuance). Requires agent-index-core 3.9.0+. v1.1.1: helper-spec fix from test-plan §3 — share/unshare specs now use the bare id:{folder_id} resource form (the exact strategy folder's Drive ID; requires permission-helper-go 0.4.0+ which adds ID-anchor validation/resolution), and pointer writes are hard-gated on the helper outcome file reporting applied (never on assumed success — a premature pointer advertises access that doesn't exist). v1.1.0: owned-content sharing model — shared strategy content lives in the owner's private member space (addressed via ID anchors, id:{member_folder_id}/strategies/{slug}/) and is shared per-person via permission-change-helper grants: share = read, collaborator = read+write, share-with-org = all@ reader. Discovery via a pointer index at /shared/strategies-index/ (one JSON pointer per shared strategy; folder granted all@ writer via collaborative-acls.json at install Step 5.5). Replaces the /shared/strategies/ directory and strategies-manifest.json. Soft-delete/unshare conventions per core standards. Requires agent-index-core 3.8.0+ (member_folder_id) and filesystem adapter 2.5.0+ (ID anchors). Addresses the strategy row of the cross-collection access audit.",
+  "version": "1.1.4",
+  "description": "Build, evaluate, and evolve named strategies. Define canonical strategy references, configure information sources, run briefings that surface opportunities, and maintain a prioritized opportunity registry \u2014 privately or shared with collaborators. v1.1.3: hard-gate amendment \u2014 pointer writes verify grants via the outcome file OR an independent aifs_get_permissions read (helper \u22640.4.0 raced page-close writing outcome files, bug 20260605-62a14c43; fixed in helper 0.4.1, fallback retained as defense in depth). v1.1.2: companion to core 3.9.0 My Drive member spaces \u2014 prose updates only (member space = Agent-Index-Private in the owner's own My Drive; owner-applied grants now permitted because the owner owns the folder; member_folder_id self-provisions via @ai:update Migration 2, admin backfill retired; soft-delete nuance). Requires agent-index-core 3.9.0+. v1.1.1: helper-spec fix from test-plan \u00a73 \u2014 share/unshare specs now use the bare id:{folder_id} resource form (the exact strategy folder's Drive ID; requires permission-helper-go 0.4.0+ which adds ID-anchor validation/resolution), and pointer writes are hard-gated on the helper outcome file reporting applied (never on assumed success \u2014 a premature pointer advertises access that doesn't exist). v1.1.0: owned-content sharing model \u2014 shared strategy content lives in the owner's private member space (addressed via ID anchors, id:{member_folder_id}/strategies/{slug}/) and is shared per-person via permission-change-helper grants: share = read, collaborator = read+write, share-with-org = all@ reader. Discovery via a pointer index at /shared/strategies-index/ (one JSON pointer per shared strategy; folder granted all@ writer via collaborative-acls.json at install Step 5.5). Replaces the /shared/strategies/ directory and strategies-manifest.json. Soft-delete/unshare conventions per core standards. Requires agent-index-core 3.8.0+ (member_folder_id) and filesystem adapter 2.5.0+ (ID anchors). Addresses the strategy row of the cross-collection access audit.",
   "author": "agent-index",
   "license": "proprietary",
   "category": "strategy",
   "agent_index_min_version": "3.9.0",
   "api": [
-    {"name":"create-strategy","triggers":[{"phrase":"create a strategy","capability":"create-strategy","description":"Define a new named strategy"},{"phrase":"strategy for","capability":"create-strategy","description":"Build a strategy for a specific area"},{"phrase":"strategic plan for","capability":"create-strategy","description":"Create a structured strategic plan"},{"phrase":"new strategy","capability":"create-strategy","description":"Start a new strategy from scratch"}]},
-    {"name":"edit-strategy","triggers":[{"phrase":"edit strategy","capability":"edit-strategy","description":"Modify an existing strategy"},{"phrase":"update the strategy for","capability":"edit-strategy","description":"Revise a strategy's content or structure"},{"phrase":"change my strategy","capability":"edit-strategy","description":"Make changes to a named strategy"}]},
-    {"name":"manage-sources","triggers":[{"phrase":"manage my sources","capability":"manage-sources","description":"Configure information sources for a strategy"},{"phrase":"add a source","capability":"manage-sources","description":"Add a new information source to a strategy"},{"phrase":"strategy sources","capability":"manage-sources","description":"View and manage strategy information feeds"}]},
-    {"name":"run-briefing","triggers":[{"phrase":"run my briefing","capability":"run-briefing","description":"Execute a strategy briefing from configured sources"},{"phrase":"morning briefing","capability":"run-briefing","description":"Run the daily strategy briefing"},{"phrase":"daily briefing","capability":"run-briefing","description":"Generate today's strategy intelligence briefing"},{"phrase":"brief me","capability":"run-briefing","description":"Run a briefing across strategy sources"}]},
-    {"name":"manage-opportunities","triggers":[{"phrase":"show my opportunities","capability":"manage-opportunities","description":"View the opportunity registry"},{"phrase":"what opportunities do we have","capability":"manage-opportunities","description":"List tracked strategic opportunities"},{"phrase":"opportunity list","capability":"manage-opportunities","description":"Display prioritized opportunities"}]},
-    {"name":"share-strategy","triggers":[{"phrase":"share my strategy","capability":"share-strategy","description":"Share a strategy with other org members"},{"phrase":"publish strategy","capability":"share-strategy","description":"Make a strategy visible to collaborators"}]},
-    {"name":"strategy-review","triggers":[{"phrase":"review my strategy","capability":"strategy-review","description":"Evaluate a strategy's health and progress"},{"phrase":"strategy health check","capability":"strategy-review","description":"Assess how a strategy is performing"},{"phrase":"how's my strategy doing","capability":"strategy-review","description":"Quick status on a named strategy"}]},
-    {"name":"strategy-tutorial","triggers":[{"phrase":"how does strategy work","capability":"strategy-tutorial","description":"Learn how to use strategy features"},{"phrase":"strategy tutorial","capability":"strategy-tutorial","description":"Get a guided tour of strategy capabilities"}]}
+    {
+      "name": "create-strategy",
+      "triggers": [
+        {
+          "phrase": "create a strategy",
+          "capability": "create-strategy",
+          "description": "Define a new named strategy"
+        },
+        {
+          "phrase": "strategy for",
+          "capability": "create-strategy",
+          "description": "Build a strategy for a specific area"
+        },
+        {
+          "phrase": "strategic plan for",
+          "capability": "create-strategy",
+          "description": "Create a structured strategic plan"
+        },
+        {
+          "phrase": "new strategy",
+          "capability": "create-strategy",
+          "description": "Start a new strategy from scratch"
+        }
+      ]
+    },
+    {
+      "name": "edit-strategy",
+      "triggers": [
+        {
+          "phrase": "edit strategy",
+          "capability": "edit-strategy",
+          "description": "Modify an existing strategy"
+        },
+        {
+          "phrase": "update the strategy for",
+          "capability": "edit-strategy",
+          "description": "Revise a strategy's content or structure"
+        },
+        {
+          "phrase": "change my strategy",
+          "capability": "edit-strategy",
+          "description": "Make changes to a named strategy"
+        }
+      ]
+    },
+    {
+      "name": "manage-sources",
+      "triggers": [
+        {
+          "phrase": "manage my sources",
+          "capability": "manage-sources",
+          "description": "Configure information sources for a strategy"
+        },
+        {
+          "phrase": "add a source",
+          "capability": "manage-sources",
+          "description": "Add a new information source to a strategy"
+        },
+        {
+          "phrase": "strategy sources",
+          "capability": "manage-sources",
+          "description": "View and manage strategy information feeds"
+        }
+      ]
+    },
+    {
+      "name": "run-briefing",
+      "triggers": [
+        {
+          "phrase": "run my briefing",
+          "capability": "run-briefing",
+          "description": "Execute a strategy briefing from configured sources"
+        },
+        {
+          "phrase": "morning briefing",
+          "capability": "run-briefing",
+          "description": "Run the daily strategy briefing"
+        },
+        {
+          "phrase": "daily briefing",
+          "capability": "run-briefing",
+          "description": "Generate today's strategy intelligence briefing"
+        },
+        {
+          "phrase": "brief me",
+          "capability": "run-briefing",
+          "description": "Run a briefing across strategy sources"
+        }
+      ]
+    },
+    {
+      "name": "manage-opportunities",
+      "triggers": [
+        {
+          "phrase": "show my opportunities",
+          "capability": "manage-opportunities",
+          "description": "View the opportunity registry"
+        },
+        {
+          "phrase": "what opportunities do we have",
+          "capability": "manage-opportunities",
+          "description": "List tracked strategic opportunities"
+        },
+        {
+          "phrase": "opportunity list",
+          "capability": "manage-opportunities",
+          "description": "Display prioritized opportunities"
+        }
+      ]
+    },
+    {
+      "name": "share-strategy",
+      "triggers": [
+        {
+          "phrase": "share my strategy",
+          "capability": "share-strategy",
+          "description": "Share a strategy with other org members"
+        },
+        {
+          "phrase": "publish strategy",
+          "capability": "share-strategy",
+          "description": "Make a strategy visible to collaborators"
+        }
+      ]
+    },
+    {
+      "name": "strategy-review",
+      "triggers": [
+        {
+          "phrase": "review my strategy",
+          "capability": "strategy-review",
+          "description": "Evaluate a strategy's health and progress"
+        },
+        {
+          "phrase": "strategy health check",
+          "capability": "strategy-review",
+          "description": "Assess how a strategy is performing"
+        },
+        {
+          "phrase": "how's my strategy doing",
+          "capability": "strategy-review",
+          "description": "Quick status on a named strategy"
+        }
+      ]
+    },
+    {
+      "name": "strategy-tutorial",
+      "triggers": [
+        {
+          "phrase": "how does strategy work",
+          "capability": "strategy-tutorial",
+          "description": "Learn how to use strategy features"
+        },
+        {
+          "phrase": "strategy tutorial",
+          "capability": "strategy-tutorial",
+          "description": "Get a guided tour of strategy capabilities"
+        }
+      ]
+    }
   ],
   "dependencies": [],
   "external_dependencies": [

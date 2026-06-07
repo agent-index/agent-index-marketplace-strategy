@@ -54,4 +54,4 @@ Setup also ensures `/shared/strategies-index/` exists, and `install-collection` 
 
 ## Version
 
-1.0.2
+1.1.4
