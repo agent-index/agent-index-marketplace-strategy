@@ -1,7 +1,7 @@
 ---
 name: manage-opportunities
 type: task
-version: 1.1.0
+version: 1.2.0
 collection: strategy
 description: View, filter, sort, update, and manage the master opportunity registry for a strategy. Supports priority changes, status transitions, notes, and filtering by priority, status, or date ranges.
 stateful: false
@@ -41,7 +41,7 @@ On demand, whenever the member wants to review or manage their opportunity lands
 
 Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened at `id:{folder_id}/...` from their pointer (collaborators have write access).
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened via the cross-drive anchor `id:{item_drive_id}:{folder_id}/...` when the pointer carries `item_drive_id` (the strategy lives on the owner's drive — C.1.3 `crossdriveread`), falling back to the bare `id:{folder_id}/...` only for older pointers; the qualified form is OneDrive parity and harmless on gdrive (collaborators have write access).
 
 If the member named a strategy: find it. If not: list available strategies and ask.
 

@@ -1,7 +1,7 @@
 ---
 name: edit-strategy
 type: task
-version: 1.1.2
+version: 1.2.0
 collection: strategy
 description: Modifies the canonical strategy reference document. Warns non-owners but does not block. Every edit is logged to the append-only changelog with who, what, and why.
 stateful: false
@@ -45,7 +45,7 @@ On demand, whenever the member needs to update their strategic reference.
 
 Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` (read the pointer files, filter to entries where you're a reader/collaborator or `org_read` is true and `scope` is not `"revoked"`) and opened at `id:{folder_id}/...` from their pointer. Never address another member's space by `/members/...` path.
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` (read the pointer files, filter to entries where you're a reader/collaborator or `org_read` is true and `scope` is not `"revoked"`) and opened via the cross-drive anchor `id:{item_drive_id}:{folder_id}/...` when the pointer carries `item_drive_id` (the strategy lives on the owner's drive — C.1.3 `crossdriveread`), falling back to the bare `id:{folder_id}/...` only for older pointers that predate it; the qualified form is OneDrive parity and harmless on gdrive. Never address another member's space by `/members/...` path.
 
 If the member named a strategy in their invocation: search for it in their local private workspace, their own shared strategies (`id:{member_folder_id}/strategies/`), and the pointer index (strategies shared with them).
 

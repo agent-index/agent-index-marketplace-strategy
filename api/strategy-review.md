@@ -1,7 +1,7 @@
 ---
 name: strategy-review
 type: task
-version: 1.1.0
+version: 1.2.0
 collection: strategy
 description: Deep review of all active opportunities against the current canonical strategy reference — without pulling new source material. Used for periodic resets, quarterly reviews, or after significant strategy edits.
 stateful: false
@@ -45,7 +45,7 @@ Manual invocation. Suggested cadence: monthly or quarterly, or after any signifi
 
 Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened at `id:{folder_id}/...` from their pointer.
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened via the cross-drive anchor `id:{item_drive_id}:{folder_id}/...` when the pointer carries `item_drive_id` (the strategy lives on the owner's drive — C.1.3 `crossdriveread`), falling back to the bare `id:{folder_id}/...` only for older pointers that predate it; the qualified form is OneDrive parity and harmless on gdrive.
 
 If the member named a strategy: find it. If not: list available strategies and ask.
 

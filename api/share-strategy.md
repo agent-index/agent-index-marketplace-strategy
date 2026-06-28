@@ -1,7 +1,7 @@
 ---
 name: share-strategy
 type: task
-version: 1.1.3
+version: 1.2.0
 collection: strategy
 description: Shares a private strategy from the member's own remote space using per-person grants — share with X (read), make X a collaborator (read+write), or share with the org (everyone reads). The owner retains ownership; content never moves to /shared. Discovery happens via a pointer file in /shared/strategies-index/.
 stateful: false
@@ -71,7 +71,7 @@ Levels combine (e.g., org-read + two collaborators). Summarize: who gets read, w
 On confirmation:
 
 1. **Copy** the entire strategy directory from the local private workspace to `id:{member_folder_id}/strategies/{slug}/` via `aifs_write` (all files — strategy.md, sources.json, opportunities.json, strategy-changelog.jsonl, briefings/, state/). If `aifs_exists("id:{member_folder_id}/strategies/{slug}")` already: ask to choose a different slug. Halt on collision.
-2. **Capture the folder ID:** `aifs_stat("id:{member_folder_id}/strategies/{slug}")` → record its `id` as `folder_id` (adapter 2.5.0+).
+2. **Capture the folder ID and home drive:** `aifs_stat("id:{member_folder_id}/strategies/{slug}")` → record its `id` as `folder_id` (adapter 2.5.0+) **and the returned `drive_id` as `item_drive_id` (adapter 2.3.0+)**. The shared copy lives in the owner's own My Drive, so capturing `drive_id` is what lets a recipient open it cross-drive (C.1.3 `crossdriveread`) — a bare `id:{folder_id}` resolves against the *recipient's* drive and 404s on OneDrive even with the grant present.
 3. **Update the shared copy's `strategy.md`:** `shared: true`, `shared_path: null`, populate `collaborators` (display_name/member_hash/email/added_date per person, with their level), `last_updated` today.
 4. **Apply the grants** — compose ONE `permission-change-helper` spec with an `op: "share"` per grant on resource `id:{folder_id}` (the **exact** strategy-folder Drive ID captured in step 2 — NOT the anchor-plus-relative-path form; permission-helper-go 0.4.0+ accepts only the bare `id:{folderId}` form, and granting the precise folder is the least-privilege surface):
    - each read-person → `role: "reader"`
@@ -87,12 +87,13 @@ On confirmation:
      "owner_hash": "{member_hash}",
      "slug": "{slug}",
      "folder_id": "{folder_id from step 2}",
+     "item_drive_id": "{item_drive_id from step 2}",
      "scope": {"org_read": true|false, "readers": ["email", ...], "collaborators": ["email", ...]},
      "title": "{strategy name}",
      "shared_date": "{today}"
    }
    ```
-   Recipients discover shared strategies by reading this index and open them via `id:{folder_id}/...`.
+   `item_drive_id` (the owner's home drive for that folder; C.1.3 `crossdriveread`) is what lets a recipient on OneDrive open content that physically lives on the owner's personal drive. Recipients discover shared strategies by reading this index and open them via the cross-drive anchor `id:{item_drive_id}:{folder_id}/...` when `item_drive_id` is present, falling back to the bare `id:{folder_id}/...` only for older pointers that predate it. On gdrive the bare anchor already reaches shared items, so the qualified form is OneDrive parity and harmless there.
 6. **Update the local private copy:** `shared: true`, `shared_path: "id:{member_folder_id}/strategies/{slug}/"`, `last_updated` today.
 7. **Append** a `strategy_shared` event to the shared copy's `strategy-changelog.jsonl`.
 8. Confirm to the member: who can read, who can write, whether the org can read, and that '@ai:edit-strategy' manages access from here.

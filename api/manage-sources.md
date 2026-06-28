@@ -1,7 +1,7 @@
 ---
 name: manage-sources
 type: task
-version: 1.1.0
+version: 1.2.0
 collection: strategy
 description: Add, edit, remove, and test information sources for a strategy. Sources are free-form — the member describes where to pull information and Claude handles the mechanics. Each source tracks its own cursor to prevent double-processing.
 stateful: false
@@ -49,7 +49,7 @@ On demand, whenever the member wants to configure their information inputs.
 
 Read `collection-setup-responses.md` via `aifs_read` to get `default_items_per_run`. Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened at `id:{folder_id}/...` from their pointer (collaborators have write access).
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` and opened via the cross-drive anchor `id:{item_drive_id}:{folder_id}/...` when the pointer carries `item_drive_id` (the strategy lives on the owner's drive — C.1.3 `crossdriveread`), falling back to the bare `id:{folder_id}/...` only for older pointers; the qualified form is OneDrive parity and harmless on gdrive (collaborators have write access).
 
 If the member named a strategy: search the member's local private workspace, their own shared strategies (`id:{member_folder_id}/strategies/`), and the pointer index (strategies shared with them).
 
