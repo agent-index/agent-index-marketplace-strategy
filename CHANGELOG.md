@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.0] — 2026-06-28 — Release C.1.3: crossdriveread
+
+### Fixed
+- **`crossdriveread`** — `share-strategy` captures `item_drive_id` from `aifs_stat`'s `drive_id` into the discovery pointer; readers (`edit-strategy`, `strategy-review`, `manage-sources`, `run-briefing`, `manage-opportunities`) open strategies shared to them via the cross-drive anchor `id:{item_drive_id}:{folder_id}/...` (bare-anchor fallback). Fixes opening a strategy held in another member's personal OneDrive. Requires onedrive adapter 2.3.0+; harmless on gdrive.
+
 ## [1.1.4] — 2026-06-06 — fleet docs hygiene (post-audit sweep)
 
 ### Fixed (docs only)
