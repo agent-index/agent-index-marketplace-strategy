@@ -42,7 +42,7 @@ A collection for building, evaluating, and evolving named strategies through age
 
 ## Sharing Model
 
-Strategies start private in the member's **local** workspace (`members/{hash}/strategies/`, accessed via native file tools). When shared, the content is copied to the **owner's private member space on the remote filesystem** (`id:{member_folder_id}/strategies/{slug}/`, ID-anchor addressing) and access is granted per person via `permission-change-helper`: *share with X* = X can read; *make X a collaborator* = X can read + write; *share with the org* = everyone (`all@`) can read. Nobody else can see it. Discovery happens through a pointer index at `/shared/strategies-index/` — one small JSON pointer per shared strategy (owner, slug, folder_id, scope); the content itself never lives under `/shared`. Owner-vs-collaborator governance over the canonical reference remains task-level soft enforcement; the per-person grants are the real filesystem enforcement. Unshare/delete follow the core soft-delete conventions (revoke grants, mark pointer `revoked`/strategy `archived` — never trash).
+Strategies start private in the member's **local** workspace (`members/{hash}/strategies/`, accessed via native file tools). When shared, the content is copied to the **owner's private member space on the remote filesystem** (`id:{member_folder_id}/strategies/{slug}/`, ID-anchor addressing) and access is granted per person through the core permission-changes procedure (the owner confirms the exact changes; each is verified; people outside the org can be included and are flagged): *share with X* = X can read; *make X a collaborator* = X can read + write; *share with the org* = everyone (`all@`) can read. Nobody else can see it. Discovery happens through a pointer index at `/shared/strategies-index/` — one small JSON pointer per shared strategy (owner, slug, folder_id, scope); the content itself never lives under `/shared`. Owner-vs-collaborator governance over the canonical reference remains task-level soft enforcement; the per-person grants are the real filesystem enforcement. Unshare/delete follow the core soft-delete conventions (revoke grants, mark pointer `revoked`/strategy `archived` — never trash).
 
 ## Org Admin Setup
 
@@ -50,8 +50,8 @@ During collection install, the org admin configures:
 - Default items per briefing run (default 10)
 - Whether strategies must start private before sharing (`private_first` or `either`)
 
-Setup also ensures `/shared/strategies-index/` exists, and `install-collection` Step 5.5 applies the `collaborative-acls.json` grant (`all@` writer on the index folder). Requires agent-index-core 3.8.0+ and filesystem adapter 2.5.0+.
+Setup also ensures `/shared/strategies-index/` exists, and `install-collection` Step 5.5 applies the `collaborative-acls.json` grant (`all@` writer on the index folder). Requires agent-index-core 3.32.0+ and filesystem adapter 2.5.0+.
 
 ## Version
 
-1.2.0
+1.3.0

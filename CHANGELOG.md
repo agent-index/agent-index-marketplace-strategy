@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.3.0] — 2026-10-02 — Sharing through the core permission-changes procedure
+
+**MINOR — requires agent-index-core 3.32.0.** Part of retiring the permission-change-helper (design record: `/shared/projects/core-improvements/artifacts/retire-permission-helper-*.md`).
+
+### Changed
+- **`share-strategy` 1.3.0, `edit-strategy` 1.3.0** — grants and removals go through core `internal/permission-changes.md`. The owner sees the exact table and confirms it in chat (removals one at a time), and each change is applied and verified under the owner's credentials. No helper binary, review page or outcome file.
+- **Recipients outside the org are allowed.** Owners can share with any email address. The table flags it **outside your org**. Previously unregistered people couldn't be granted.
+- **`share-strategy` records access only after verification.** `shared: true`, the `collaborators` list, the pointer, the changelog event and the confirmation are all written after the gate and name only satisfied grants. `partial` → pointer with only the satisfied grants.
+- **`share-strategy` `none` no longer abandons the share.** When no grant is satisfied (including a cancelled table), the remote copy is left untouched, no pointer is written, and the member is told it isn't shared. Re-running resumes: an existing slug folder with no pointer is picked up (re-stat, reuse `folder_id`/`item_drive_id`, re-copy changed files) instead of halting as a slug collision. (Replaces the `abandoned-share` marking and the incorrect note that members can't delete the copied folder.)
+- **`edit-strategy` access changes are owner-only**, even when a non-owner proceeds with content edits. Access changes are a first-class branch of the change step with the full recipient rules; the procedure targets the pointer's `folder_id` (never the composite anchor form); the pointer is overwritten once, after the gate (title-only changes stay ungated).
+- **`edit-strategy` scope:** added grants → scope from a fresh `aifs_get_permissions` read (never replaced with this run's rows); after removals, `scope`/`collaborators` are recomputed from a fresh read and `scope: "revoked"` is set only when no explicit grants other than the owner remain. Frontmatter and manifest now declare its pointer writes (`produces_shared_artifacts: true`, `reads_from`/`writes_to`).
+- **`create-strategy` 1.1.2** — wording.
+- **Collection setup 1.0.3** and README — minimum core raised to 3.32.0. ROADMAP current version updated.
+- **Manifest sync** — `share-strategy` `reads_from`/`writes_to`, and `manage-sources` / `run-briefing` `external_dependencies` now match their frontmatter.
+
+### Removed
+- Dependency on the `permission-change-helper` skill and binary.
+
 ## [1.2.0] — 2026-06-28 — Release C.1.3: crossdriveread
 
 ### Fixed
