@@ -3,7 +3,7 @@
   "type": "task",
   "display_name": "Manage Sources",
   "collection": "strategy",
-  "collection_version": "1.2.0",
+  "collection_version": "1.3.0",
   "version": "1.2.0",
   "eol_date": null,
   "eol_warning_days": 60,
@@ -19,8 +19,16 @@
     "tasks": []
   },
   "external_dependencies": [
-    "Gmail / Outlook / other email provider (conditional)",
-    "Web search / RSS (conditional)"
+    {
+      "system": "Gmail / Outlook / other email provider (conditional)",
+      "access_required": "Read email messages by label or folder (only if email-based sources are configured)",
+      "contact": "org admin"
+    },
+    {
+      "system": "Web search / RSS (conditional)",
+      "access_required": "Fetch web content and RSS feeds (only if web-based sources are configured)",
+      "contact": "org admin"
+    }
   ],
   "optional_external_dependencies": [],
   "reads_from": null,

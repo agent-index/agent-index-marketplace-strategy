@@ -3,13 +3,13 @@
   "type": "task",
   "display_name": "Edit Strategy",
   "collection": "strategy",
-  "collection_version": "1.2.0",
-  "version": "1.2.0",
+  "collection_version": "1.3.0",
+  "version": "1.3.0",
   "eol_date": null,
   "eol_warning_days": 60,
   "stateful": false,
   "produces_artifacts": false,
-  "produces_shared_artifacts": false,
+  "produces_shared_artifacts": true,
   "setup_template": "edit-strategy-setup.md",
   "dependency_status": "complete",
   "missing_dependencies": [],
@@ -20,6 +20,6 @@
   },
   "external_dependencies": [],
   "optional_external_dependencies": [],
-  "reads_from": null,
-  "writes_to": null
+  "reads_from": "id:{member_folder_id}/strategies/, /shared/strategies-index/",
+  "writes_to": "id:{member_folder_id}/strategies/, /shared/strategies-index/"
 }

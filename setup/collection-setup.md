@@ -1,7 +1,7 @@
 ---
 name: strategy-collection-setup
 type: collection-setup
-version: 1.0.2
+version: 1.0.3
 collection: strategy
 description: Org-admin setup interview for the Strategy collection
 upgrade_compatible: true
@@ -17,7 +17,7 @@ This setup configures how the Strategy collection works across your org. It cove
 
 - You have org admin credentials in agent-index
 - The remote filesystem is accessible (via `aifs_*` tools)
-- Agent-index-core 3.8.0+ and filesystem adapter 2.5.0+ are installed (ID anchors + `member_folder_id` support); `/shared/strategies-index/` will be created during Setup Completion if missing
+- Agent-index-core 3.32.0+ and filesystem adapter 2.5.0+ are installed (ID anchors + `member_folder_id` support); `/shared/strategies-index/` will be created during Setup Completion if missing
 
 ---
 
@@ -88,3 +88,4 @@ Shared strategy **content** lives in each owner's private member space (`id:{mem
 
 ### Migration Notes
 - v1.0.x → v1.1.0: shared strategy storage moved from a common `/shared/strategies/` directory (with `strategies-manifest.json`) to owner member spaces with per-person grants and a pointer index at `/shared/strategies-index/`. No automatic data migration is performed; re-sharing handles relocation per strategy.
+- v1.0.2 → v1.0.3 (collection 1.3.0): minimum agent-index-core raised to 3.32.0 (sharing uses the core permission-changes procedure). No parameter changes.

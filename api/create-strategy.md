@@ -1,7 +1,7 @@
 ---
 name: create-strategy
 type: task
-version: 1.1.1
+version: 1.1.2
 collection: strategy
 description: Creates a new named strategy with a canonical reference document, empty source and opportunity registries, and the full directory structure — always private in the member's workspace; sharing happens via share-strategy.
 stateful: false
@@ -227,7 +227,7 @@ On confirmation:
    Strategy created {today}.
    ```
 
-7. If the member chose share-right-away in Step 2: hand off to `share-strategy` now (it copies the new strategy to `id:{member_folder_id}/strategies/{slug}/`, applies the chosen grants via `permission-change-helper`, and writes the pointer to `/shared/strategies-index/`). There is no shared strategies-manifest to update.
+7. If the member chose share-right-away in Step 2: hand off to `share-strategy` now (it copies the new strategy to `id:{member_folder_id}/strategies/{slug}/`, applies the chosen grants through the core permission-changes procedure, with the owner confirming, and writes the pointer to `/shared/strategies-index/`). There is no shared strategies-manifest to update.
 
 8. Confirm to member:
    > "Strategy '{name}' has been created. Next step: add sources with '@ai:manage-sources' so you have information flowing into your briefings. When you're ready, run '@ai:run-briefing' to evaluate source material against your strategy."

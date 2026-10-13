@@ -1,7 +1,7 @@
 # Strategy Collection — Roadmap
 
-Current version: 1.0.2
-Last updated: 2026-04-05
+Current version: 1.3.0
+Last updated: 2026-10-02
 
 ---
 
