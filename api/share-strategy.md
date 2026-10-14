@@ -46,7 +46,7 @@ The member identifies which private strategy to share, the sharing level(s), and
 
 ### Step 1: Resolve Identity and Strategy
 
-Read `member-index.json` (local) for `member_hash` and **`member_folder_id`**. If `member_folder_id` is missing: run `@ai:update` (its Migration 2 creates your `Agent-Index-Private` My Drive space and caches the ID) or `@ai:member-bootstrap` — then retry. There is no admin backfill under the 3.9.0 model; the member self-provisions. (See standards.md § "Addressing: paths vs. ID anchors".)
+Read `member-index.json` (local) for `member_hash` and **`member_folder_id`**. If `member_folder_id` is missing: run `@ai:update` (its Migration 2 creates your `Agent-Index-Private` My Drive space and caches the ID) or `@ai:member-bootstrap` — then retry. There is no admin backfill under the 3.9.0 model; the member self-provisions. (See `agent-index-core/runtime-reference.md` § "Addressing: Owned Content and Sharing".)
 
 **Tool selection:** the local private workspace (`members/{member_hash}/strategies/`) uses native Read/Write. The member's remote space (`id:{member_folder_id}/...`) and the pointer index (`/shared/strategies-index/`) use `aifs_*`.
 
@@ -113,7 +113,7 @@ On confirmation:
 
 ### Un-sharing (reference; performed via edit-strategy)
 
-Revoking access = an `unshare` change through the core permission-changes procedure (owner confirms each removal), then re-read `aifs_get_permissions(id:{folder_id})` and **overwrite** the pointer from what is actually in effect: `scope` lists whoever still has access, and `"scope": "revoked"` is set only when no explicit grants other than the owner remain. Never derive the new scope from the removals you intended or from declined rows. **Never delete the pointer.** It lives on the Shared Drive where members cannot trash (soft-delete convention, standards.md). The strategy content in your own My Drive is yours to delete, but prefer archive-marking so changelogs and cross-references stay resolvable.
+Revoking access = an `unshare` change through the core permission-changes procedure (owner confirms each removal), then re-read `aifs_get_permissions(id:{folder_id})` and **overwrite** the pointer from what is actually in effect: `scope` lists whoever still has access, and `"scope": "revoked"` is set only when no explicit grants other than the owner remain. Never derive the new scope from the removals you intended or from declined rows. **Never delete the pointer.** It lives on the Shared Drive where members cannot trash (soft-delete convention, `agent-index-core/runtime-reference.md` § "Addressing: Owned Content and Sharing"). The strategy content in your own My Drive is yours to delete, but prefer archive-marking so changelogs and cross-references stay resolvable.
 
 ---
 

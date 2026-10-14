@@ -25,7 +25,7 @@ This setup configures how the Strategy collection works across your org. It cove
 
 ### Shared Strategy Model (no path to configure — v1.1.0+)
 
-Shared strategy **content** lives in each owner's private member space (`id:{member_folder_id}/strategies/{slug}/`) and is shared via per-person grants — *not* in a common `/shared` directory. The only org-level location is the **discovery index** at the fixed path `/shared/strategies-index/` (one pointer file per shared strategy), whose `all@` writer grant is declared in this collection's `collaborative-acls.json` and provisioned by `install-collection` Step 5.5. There is nothing to interview the admin about for storage; note this model in the confirmation. (See standards.md § "Addressing: paths vs. ID anchors".)
+Shared strategy **content** lives in each owner's private member space (`id:{member_folder_id}/strategies/{slug}/`) and is shared via per-person grants — *not* in a common `/shared` directory. The only org-level location is the **discovery index** at the fixed path `/shared/strategies-index/` (one pointer file per shared strategy), whose `all@` writer grant is declared in this collection's `collaborative-acls.json` and provisioned by `install-collection` Step 5.5. There is nothing to interview the admin about for storage; note this model in the confirmation. (See `agent-index-core/runtime-reference.md` § "Addressing: Owned Content and Sharing".)
 
 ---
 

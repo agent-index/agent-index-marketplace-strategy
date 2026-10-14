@@ -48,7 +48,7 @@ On demand, whenever the member needs to update their strategic reference.
 
 Read `member-index.json` (local) for `member_hash` and `member_folder_id`.
 
-**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (standards.md § "Addressing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` (read the pointer files, filter to entries where you're a reader/collaborator or `org_read` is true and `scope` is not `"revoked"`) and opened via the cross-drive anchor `id:{item_drive_id}:{folder_id}/...` when the pointer carries `item_drive_id` (the strategy lives on the owner's drive — C.1.3 `crossdriveread`), falling back to the bare `id:{folder_id}/...` only for older pointers that predate it; the qualified form is OneDrive parity and harmless on gdrive. Never address another member's space by `/members/...` path.
+**Tool selection:** Operations on the member's local private workspace (`members/{member_hash}/strategies/`) use native Read/Write tools. Operations on **shared** strategies use `aifs_*` tools with **ID anchors** (`agent-index-core/runtime-reference.md` § "Addressing: Owned Content and Sharing"): your own shared strategies live at `id:{member_folder_id}/strategies/{slug}/`; strategies shared *with* you are discovered via the pointer index `/shared/strategies-index/` (read the pointer files, filter to entries where you're a reader/collaborator or `org_read` is true and `scope` is not `"revoked"`) and opened via the cross-drive anchor `id:{item_drive_id}:{folder_id}/...` when the pointer carries `item_drive_id` (the strategy lives on the owner's drive — C.1.3 `crossdriveread`), falling back to the bare `id:{folder_id}/...` only for older pointers that predate it; the qualified form is OneDrive parity and harmless on gdrive. Never address another member's space by `/members/...` path.
 
 If the member named a strategy in their invocation: search for it in their local private workspace, their own shared strategies (`id:{member_folder_id}/strategies/`), and the pointer index (strategies shared with them).
 
@@ -167,7 +167,7 @@ On confirmation:
       - Unsatisfied rows are pending: report them with the procedure's summary lines and tell the owner to run '@ai:edit-strategy' again to finish.
    3. **Overwrite the pointer once** at `/shared/strategies-index/{owner_hash}-{slug}.json` with the new `title` (if changed) and the gated `scope`. A title-only change (no access changes) skips 4.1–4.2 and just overwrites the title; it needs no gate.
 
-   **Never delete** the pointer or any remote file (members cannot trash; soft-delete convention, standards.md). There is no shared strategies-manifest; the per-item pointer is the only discovery record.
+   **Never delete** the pointer or any remote file (members cannot trash; soft-delete convention, `agent-index-core/runtime-reference.md` § "Addressing: Owned Content and Sharing"). There is no shared strategies-manifest; the per-item pointer is the only discovery record.
 
 5. Confirm to member:
    > "Strategy '{name}' has been updated. {N} section(s) changed. The changelog has been updated."

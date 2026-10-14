@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "Declares the additive collaborative-write grants strategy needs. Read by install-collection Step 5.5 and provisioned through the core permission-changes procedure (the admin confirms the exact changes). Never applied by calling aifs_share directly. Note: shared strategy CONTENT does not live under /shared — it lives in the owner's private member space and is shared via per-item grants (standards.md § 'Addressing: paths vs. ID anchors'). The only open-shared piece is the discovery index below.",
+  "description": "Declares the additive collaborative-write grants strategy needs. Read by install-collection Step 5.5 and provisioned through the core permission-changes procedure (the admin confirms the exact changes). Never applied by calling aifs_share directly. Note: shared strategy CONTENT does not live under /shared — it lives in the owner's private member space and is shared via per-item grants (agent-index-core/runtime-reference.md § 'Addressing: Owned Content and Sharing'). The only open-shared piece is the discovery index below.",
   "acls": [
     {
       "path": "/shared/strategies-index/",
