@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.3.1] — <RELEASE_DATE> — standards.md citations re-pointed
+## [1.3.1] — 2026-10-17 — standards.md citations re-pointed
 
 Pairs with core 4.1.0 (CI-013, strategy#1 by Kallista Salak): create-strategy 1.1.3, edit-strategy 1.3.1, manage-opportunities 1.2.1, manage-sources 1.2.1, run-briefing 1.2.1, share-strategy 1.3.1, strategy-review 1.2.1, `collaborative-acls.json` and the collection setup cite core `runtime-reference.md` instead of the retired `standards.md`. No behaviour change.
 
