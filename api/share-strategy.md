@@ -1,7 +1,7 @@
 ---
 name: share-strategy
 type: task
-version: 1.3.0
+version: 1.3.1
 collection: strategy
 description: Shares a private strategy from the member's own remote space using per-person grants — share with X (read), make X a collaborator (read+write), or share with the org (everyone reads). The owner retains ownership; content never moves to /shared. Discovery happens via a pointer file in /shared/strategies-index/.
 stateful: false

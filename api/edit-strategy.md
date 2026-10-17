@@ -1,7 +1,7 @@
 ---
 name: edit-strategy
 type: task
-version: 1.3.0
+version: 1.3.1
 collection: strategy
 description: Modifies the canonical strategy reference document. Warns non-owners but does not block. Every edit is logged to the append-only changelog with who, what, and why.
 stateful: false

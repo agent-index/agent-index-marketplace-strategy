@@ -1,7 +1,7 @@
 ---
 name: manage-opportunities
 type: task
-version: 1.2.0
+version: 1.2.1
 collection: strategy
 description: View, filter, sort, update, and manage the master opportunity registry for a strategy. Supports priority changes, status transitions, notes, and filtering by priority, status, or date ranges.
 stateful: false
